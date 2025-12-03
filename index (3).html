@@ -3,789 +3,493 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roteiro Oficinas Percursos Gerais</title>
-    
-    <!-- Tailwind CSS -->
+    <title>Oficinas Percursos Gerais</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- React & ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
-    <!-- Babel para JSX -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- Fontes -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
         
-        /* Animações Personalizadas */
-        @keyframes fade-in-up {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fff7ed; /* Fundo creme bem suave */
         }
-        .animate-fade-in-up {
-            animation: fade-in-up 0.6s ease-out forwards;
+
+        .gradient-header {
+            background: linear-gradient(135deg, #dc2626 0%, #ea580c 50%, #facc15 100%);
         }
-        
-        /* Scrollbar suave */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #f5f5f4; }
-        ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
+
+        .card-shadow {
+            box-shadow: 0 2px 4px -1px rgba(220, 38, 38, 0.06), 0 1px 2px -1px rgba(220, 38, 38, 0.04);
+            transition: all 0.2s ease;
+        }
+
+        .card-shadow:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 6px -1px rgba(234, 88, 12, 0.1), 0 2px 4px -1px rgba(234, 88, 12, 0.06);
+        }
     </style>
 </head>
-<body class="bg-stone-50 text-stone-800 antialiased">
+<body class="min-h-screen flex flex-col">
 
-    <div id="root"></div>
+    <!-- Header -->
+    <header class="gradient-header text-white p-4 shadow-md">
+        <div class="container mx-auto max-w-5xl">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="map" class="w-6 h-6"></i>
+                    <h1 class="text-xl md:text-2xl font-bold tracking-tight">Oficinas Percursos Gerais</h1>
+                </div>
+                <div class="text-white/90 text-xs font-medium bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
+                    Calendário 2025/2026
+                </div>
+            </div>
+        </div>
+    </header>
 
-    <script type="text/babel">
-        const { useState, useMemo, useRef, useEffect } = React;
+    <!-- Filters Section -->
+    <section class="bg-white border-b border-orange-100 sticky top-0 z-10 shadow-sm">
+        <div class="container mx-auto max-w-5xl p-3">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                
+                <!-- Filter: Region -->
+                <div class="relative">
+                    <select id="regionFilter" class="w-full bg-orange-50 border border-orange-200 text-gray-700 text-sm rounded-md p-2 focus:ring-1 focus:ring-orange-500 focus:border-orange-500 outline-none cursor-pointer">
+                        <option value="">Região: Todas</option>
+                        <option value="1">Região 1</option>
+                        <option value="2">Região 2</option>
+                        <option value="3">Região 3</option>
+                        <option value="4">Região 4</option>
+                        <option value="5">Região 5</option>
+                        <option value="6">Região 6</option>
+                    </select>
+                </div>
 
-        // --- COMPONENTES DE ÍCONES (Inlined para evitar erros de CDN) ---
-        // Estes componentes substituem a biblioteca lucide-react externa
-        const IconBase = ({ children, className, ...props }) => (
-            <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                width="24" height="24" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                className={className} 
-                {...props}
-            >
-                {children}
-            </svg>
-        );
+                <!-- Filter: Month -->
+                <div class="relative">
+                    <select id="monthFilter" class="w-full bg-orange-50 border border-orange-200 text-gray-700 text-sm rounded-md p-2 focus:ring-1 focus:ring-orange-500 focus:border-orange-500 outline-none cursor-pointer">
+                        <option value="">Mês: Todos</option>
+                        <option value="12">Dezembro 2025</option>
+                        <option value="01">Janeiro 2026</option>
+                        <option value="02">Fevereiro 2026</option>
+                        <option value="03">Março 2026</option>
+                    </select>
+                </div>
 
-        const Calendar = (props) => <IconBase {...props}><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></IconBase>;
-        const MapPin = (props) => <IconBase {...props}><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></IconBase>;
-        const ArrowUpDown = (props) => <IconBase {...props}><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></IconBase>;
-        const Filter = (props) => <IconBase {...props}><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></IconBase>;
-        const X = (props) => <IconBase {...props}><path d="M18 6 6 18"/><path d="m6 6 18 12"/></IconBase>;
-        const Send = (props) => <IconBase {...props}><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></IconBase>;
-        const Sparkles = (props) => <IconBase {...props}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 5H5"/><path d="M5 19v-4"/><path d="M3 17h4"/><path d="M15 19v-4"/><path d="M19 17h-4"/></IconBase>;
-        const Loader = (props) => <IconBase {...props}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></IconBase>;
-        const Bot = (props) => <IconBase {...props}><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></IconBase>;
-        const FileText = (props) => <IconBase {...props}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></IconBase>;
-        const Share2 = (props) => <IconBase {...props}><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></IconBase>;
-        const CheckCircle = (props) => <IconBase {...props}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></IconBase>;
-        const LinkIcon = (props) => <IconBase {...props}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></IconBase>;
-        const Copy = (props) => <IconBase {...props}><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></IconBase>;
-        const Search = (props) => <IconBase {...props}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></IconBase>;
+                <!-- Filter: City -->
+                <div class="relative">
+                    <select id="cityFilter" class="w-full bg-orange-50 border border-orange-200 text-gray-700 text-sm rounded-md p-2 focus:ring-1 focus:ring-orange-500 focus:border-orange-500 outline-none cursor-pointer">
+                        <option value="">Cidade: Todas</option>
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
 
+                <!-- Clear Button -->
+                <div class="">
+                    <button id="clearFilters" class="w-full bg-red-50 hover:bg-red-100 text-red-600 text-sm font-semibold py-2 px-3 rounded-md transition-colors flex items-center justify-center gap-1 border border-red-100 h-full">
+                        <i data-lucide="x-circle" class="w-3 h-3"></i>
+                        Limpar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        // --- BASE DE DADOS COMPLETA ---
-        const fullSchedule = [
-            // --- ROTA 1 ---
-            { data: '2025-12-08', cidade: 'Montes Claros', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2025-12-08', cidade: 'São Romão', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2025-12-09', cidade: 'Santa Fé de Minas', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2025-12-10', cidade: 'Urucuia', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2025-12-11', cidade: 'Chapada Gaúcha', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2025-12-11', cidade: 'Januária', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2025-12-12', cidade: 'Montalvânia', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2025-12-15', cidade: 'Engenheiro Navarro', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2025-12-16', cidade: 'Francisco Dumont', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2025-12-17', cidade: 'Guaraciama', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2025-12-18', cidade: 'Jaíba', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2025-12-19', cidade: 'Matias Cardoso', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-01-05', cidade: 'Luislândia', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-01-06', cidade: 'Icaraí de Minas', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-01-07', cidade: 'Ubaí', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-01-08', cidade: 'Campo Azul', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-01-09', cidade: 'São João do Pacuí', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-01-12', cidade: 'Patis', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-01-13', cidade: 'Mirabela', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-01-14', cidade: 'Japonvar', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-01-15', cidade: 'Capitão Enéas', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-01-16', cidade: 'Coração de Jesus', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-02-03', cidade: 'Glaucilândia', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-02-03', cidade: 'Juramento', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-02-04', cidade: 'Itacambira', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-02-04', cidade: 'Botumirim', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-02-06', cidade: 'Claro dos Poções', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-02-09', cidade: 'Engenheiro Navarro', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-02-10', cidade: 'Guaraciama', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-02-11', cidade: 'Jaíba', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-02-11', cidade: 'Matias Cardoso', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-03-02', cidade: 'Jequitaí', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-03-02', cidade: 'Ponto Chique', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-03-03', cidade: 'Ibiaí', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-03-03', cidade: 'Lagoa dos Patos', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-03-04', cidade: 'São João da Lagoa', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-03-09', cidade: 'Patis', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-03-09', cidade: 'Mirabela', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-03-10', cidade: 'Japonvar', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-03-11', cidade: 'Capitão Enéas', rota: 'Rota 1', hub: 'Montes Claros' },
-            { data: '2026-03-12', cidade: 'Coração de Jesus', rota: 'Rota 1', hub: 'Montes Claros' },
+    <!-- Content List -->
+    <main class="flex-grow container mx-auto max-w-5xl p-3 md:p-4">
+        
+        <!-- Stats -->
+        <div class="flex justify-between items-center mb-2 text-xs text-gray-500 font-medium px-1">
+            <span id="resultsCount">Carregando...</span>
+            <span class="hidden md:inline">Visualização em Lista Compacta</span>
+        </div>
 
-            // --- ROTA 2 ---
-            { data: '2025-12-08', cidade: 'Jequitaí', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2025-12-09', cidade: 'Ponto Chique', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2025-12-10', cidade: 'Ibiaí', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2025-12-11', cidade: 'Lagoa dos Patos', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2025-12-12', cidade: 'São João da Lagoa', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2025-12-15', cidade: 'Luislândia', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2025-12-16', cidade: 'Icaraí de Minas', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2025-12-17', cidade: 'Ubaí', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2025-12-18', cidade: 'Campo Azul', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2025-12-19', cidade: 'São João do Pacuí', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-01-05', cidade: 'Glaucilândia', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-01-06', cidade: 'Juramento', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-01-07', cidade: 'Itacambira', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-01-08', cidade: 'Botumirim', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-01-09', cidade: 'Claro dos Poções', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-01-12', cidade: 'São Romão', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-01-13', cidade: 'Santa Fé de Minas', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-01-14', cidade: 'Urucuia', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-01-15', cidade: 'Chapada Gaúcha', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-01-15', cidade: 'Januária', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-01-16', cidade: 'Montalvânia', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-02-03', cidade: 'Jequitaí', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-02-04', cidade: 'Ibiaí', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-02-05', cidade: 'São João da Lagoa', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-02-09', cidade: 'Patis', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-02-09', cidade: 'Mirabela', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-02-10', cidade: 'Japonvar', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-02-11', cidade: 'Capitão Enéas', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-02-12', cidade: 'Coração de Jesus', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-03-02', cidade: 'Glaucilândia', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-03-03', cidade: 'Itacambira', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-03-03', cidade: 'Botumirim', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-03-05', cidade: 'Claro dos Poções', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-03-09', cidade: 'Engenheiro Navarro', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-03-10', cidade: 'Guaraciama', rota: 'Rota 2', hub: 'Montes Claros' },
-            { data: '2026-03-11', cidade: 'Jaíba', rota: 'Rota 2', hub: 'Montes Claros' },
+        <!-- List Container -->
+        <div id="eventsGrid" class="flex flex-col gap-2">
+            <!-- Items will be injected here -->
+        </div>
 
-            // --- ROTA 3 ---
-            { data: '2025-12-08', cidade: 'Patis', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2025-12-09', cidade: 'Mirabela', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2025-12-10', cidade: 'Japonvar', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2025-12-11', cidade: 'Capitão Enéas', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2025-12-12', cidade: 'Coração de Jesus', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2025-12-15', cidade: 'Glaucilândia', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2025-12-16', cidade: 'Juramento', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2025-12-17', cidade: 'Itacambira', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2025-12-18', cidade: 'Botumirim', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2025-12-19', cidade: 'Claro dos Poções', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-01-05', cidade: 'Engenheiro Navarro', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-01-06', cidade: 'Francisco Dumont', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-01-07', cidade: 'Guaraciama', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-01-08', cidade: 'Jaíba', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-01-09', cidade: 'Matias Cardoso', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-01-12', cidade: 'Jequitaí', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-01-13', cidade: 'Ponto Chique', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-01-14', cidade: 'Ibiaí', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-01-15', cidade: 'Lagoa dos Patos', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-01-16', cidade: 'São João da Lagoa', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-02-03', cidade: 'São Romão', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-02-03', cidade: 'Santa Fé de Minas', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-02-04', cidade: 'Urucuia', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-02-04', cidade: 'Chapada Gaúcha', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-02-04', cidade: 'Januária', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-02-05', cidade: 'Montalvânia', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-02-09', cidade: 'Luislândia', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-02-09', cidade: 'Icaraí de Minas', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-02-10', cidade: 'Ubaí', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-02-10', cidade: 'Campo Azul', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-02-11', cidade: 'São João do Pacuí', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-03-02', cidade: 'São Romão', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-03-03', cidade: 'Urucuia', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-03-03', cidade: 'Chapada Gaúcha', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-03-04', cidade: 'Montalvânia', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-03-09', cidade: 'Luislândia', rota: 'Rota 3', hub: 'Montes Claros' },
-            { data: '2026-03-10', cidade: 'Ubaí', rota: 'Rota 3', hub: 'Montes Claros' },
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden flex flex-col items-center justify-center py-8 text-center">
+            <div class="bg-orange-50 p-3 rounded-full mb-3">
+                <i data-lucide="search-x" class="w-6 h-6 text-orange-400"></i>
+            </div>
+            <h3 class="text-sm font-bold text-gray-700">Nada encontrado</h3>
+            <p class="text-xs text-gray-400 mt-1">Ajuste os filtros.</p>
+        </div>
+    </main>
 
-            // --- ROTA 4 ---
-            { data: '2025-12-08', cidade: 'Minas Novas', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2025-12-09', cidade: 'Leme do Prado', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2025-12-10', cidade: 'José Gonçalves de Minas', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2025-12-11', cidade: 'Francisco Badaró', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2025-12-12', cidade: 'Jenipapo de Minas', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2025-12-15', cidade: 'Berilo', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2025-12-16', cidade: 'Itinga', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2025-12-17', cidade: 'Coronel Murta', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2025-12-18', cidade: 'Novorizonte', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2025-12-18', cidade: 'Salinas', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-01-05', cidade: 'Rio Pardo de Minas', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-01-06', cidade: 'Vargem Grande', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-01-07', cidade: 'Mato Verde', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-01-08', cidade: 'Gameleiras', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-01-09', cidade: 'Mamonas', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-01-13', cidade: 'Riacho dos Machados', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-01-14', cidade: 'Porteirinha', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-01-15', cidade: 'Serranópolis de Minas', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-01-16', cidade: 'Catuti', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-02-04', cidade: 'Minas Novas', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-02-04', cidade: 'Leme do Prado', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-02-05', cidade: 'José Gonçalves de Minas', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-02-05', cidade: 'Francisco Badaró', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-02-06', cidade: 'Jenipapo de Minas', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-02-10', cidade: 'Berilo', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-02-10', cidade: 'Itinga', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-02-11', cidade: 'Coronel Murta', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-02-12', cidade: 'Salinas', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-03-02', cidade: 'Rio Pardo de Minas', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-03-02', cidade: 'Mato Verde', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-03-03', cidade: 'Gameleiras', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-03-03', cidade: 'Mamonas', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-03-09', cidade: 'Riacho dos Machados', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-03-09', cidade: 'Porteirinha', rota: 'Rota 4', hub: 'Teófilo Otoni' },
-            { data: '2026-03-10', cidade: 'Catuti', rota: 'Rota 4', hub: 'Teófilo Otoni' },
+    <footer class="bg-gray-800 text-gray-400 py-4 mt-6">
+        <div class="container mx-auto text-center px-4">
+            <p class="text-xs">Oficinas Percursos Gerais &copy; 2025-2026</p>
+        </div>
+    </footer>
 
-            // --- ROTA 5 ---
-            { data: '2025-12-08', cidade: 'Rio Pardo de Minas', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2025-12-09', cidade: 'Vargem Grande', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2025-12-10', cidade: 'Mato Verde', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2025-12-11', cidade: 'Gameleiras', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2025-12-12', cidade: 'Mamonas', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2025-12-16', cidade: 'Riacho dos Machados', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2025-12-17', cidade: 'Porteirinha', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2025-12-18', cidade: 'Serranópolis de Minas', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2025-12-19', cidade: 'Catuti', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-01-05', cidade: 'Minas Novas', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-01-06', cidade: 'Leme do Prado', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-01-07', cidade: 'José Gonçalves de Minas', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-01-08', cidade: 'Francisco Badaró', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-01-09', cidade: 'Jenipapo de Minas', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-01-12', cidade: 'Berilo', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-01-13', cidade: 'Itinga', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-01-14', cidade: 'Coronel Murta', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-01-15', cidade: 'Novorizonte', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-01-15', cidade: 'Salinas', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-02-04', cidade: 'Rio Pardo de Minas', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-02-04', cidade: 'Mato Verde', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-02-05', cidade: 'Gameleiras', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-02-05', cidade: 'Mamonas', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-02-10', cidade: 'Riacho dos Machados', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-02-10', cidade: 'Porteirinha', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-02-11', cidade: 'Serranópolis de Minas', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-02-11', cidade: 'Catuti', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-03-03', cidade: 'Minas Novas', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-03-03', cidade: 'Leme do Prado', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-03-04', cidade: 'José Gonçalves de Minas', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-03-04', cidade: 'Francisco Badaró', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-03-05', cidade: 'Jenipapo de Minas', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-03-10', cidade: 'Berilo', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-03-10', cidade: 'Itinga', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-03-11', cidade: 'Coronel Murta', rota: 'Rota 5', hub: 'Teófilo Otoni' },
-            { data: '2026-03-11', cidade: 'Salinas', rota: 'Rota 5', hub: 'Teófilo Otoni' },
+    <script>
+        // --- DATASET FROM PDF ---
+        // Format: { region: 1, city: "Name", route: "Rota X", date: "DD/MM/YYYY", rawDate: for sorting }
+        const rawData = [
+            // REGIÃO 1
+            { r: 1, c: "Claro dos Poções", rot: "Rota 3", d: "19/12/2025" },
+            { r: 1, c: "Claro dos Poções", rot: "Rota 2", d: "09/01/2026" },
+            { r: 1, c: "Claro dos Poções", rot: "Rota 1", d: "06/02/2026" },
+            { r: 1, c: "Claro dos Poções", rot: "Rota 2", d: "05/03/2026" },
+            { r: 1, c: "Engenheiro Navarro", rot: "Rota 1", d: "15/12/2025" },
+            { r: 1, c: "Engenheiro Navarro", rot: "Rota 3", d: "05/01/2026" },
+            { r: 1, c: "Engenheiro Navarro", rot: "Rota 1", d: "09/02/2026" },
+            { r: 1, c: "Engenheiro Navarro", rot: "Rota 2", d: "09/03/2026" },
+            { r: 1, c: "Francisco Dumont", rot: "Rota 1", d: "16/12/2025" },
+            { r: 1, c: "Francisco Dumont", rot: "Rota 3", d: "06/01/2026" },
+            { r: 1, c: "Francisco Dumont", rot: "Rota 1", d: "09/02/2026" },
+            { r: 1, c: "Francisco Dumont", rot: "Rota 2", d: "09/03/2026" },
+            { r: 1, c: "Glaucilândia", rot: "Rota 3", d: "15/12/2025" },
+            { r: 1, c: "Glaucilândia", rot: "Rota 2", d: "05/01/2026" },
+            { r: 1, c: "Glaucilândia", rot: "Rota 1", d: "03/02/2026" },
+            { r: 1, c: "Glaucilândia", rot: "Rota 2", d: "02/03/2026" },
+            { r: 1, c: "Guaraciama", rot: "Rota 1", d: "17/12/2025" },
+            { r: 1, c: "Guaraciama", rot: "Rota 3", d: "07/01/2026" },
+            { r: 1, c: "Guaraciama", rot: "Rota 1", d: "10/02/2026" },
+            { r: 1, c: "Guaraciama", rot: "Rota 2", d: "10/03/2026" },
+            { r: 1, c: "Itacambira", rot: "Rota 3", d: "17/12/2025" },
+            { r: 1, c: "Itacambira", rot: "Rota 2", d: "07/01/2026" },
+            { r: 1, c: "Itacambira", rot: "Rota 1", d: "04/02/2026" },
+            { r: 1, c: "Itacambira", rot: "Rota 2", d: "03/03/2026" },
+            { r: 1, c: "Jequitaí", rot: "Rota 2", d: "08/12/2025" },
+            { r: 1, c: "Jequitaí", rot: "Rota 3", d: "12/01/2026" },
+            { r: 1, c: "Jequitaí", rot: "Rota 2", d: "03/02/2026" },
+            { r: 1, c: "Jequitaí", rot: "Rota 1", d: "02/03/2026" },
+            { r: 1, c: "Juramento", rot: "Rota 3", d: "16/12/2025" },
+            { r: 1, c: "Juramento", rot: "Rota 2", d: "06/01/2026" },
+            { r: 1, c: "Juramento", rot: "Rota 1", d: "03/02/2026" },
+            { r: 1, c: "Juramento", rot: "Rota 2", d: "02/03/2026" },
+            { r: 1, c: "Lagoa dos Patos", rot: "Rota 2", d: "11/12/2025" },
+            { r: 1, c: "Lagoa dos Patos", rot: "Rota 3", d: "15/01/2026" },
+            { r: 1, c: "Lagoa dos Patos", rot: "Rota 2", d: "04/02/2026" },
+            { r: 1, c: "Lagoa dos Patos", rot: "Rota 1", d: "03/03/2026" },
+            { r: 1, c: "São João da Lagoa", rot: "Rota 2", d: "12/12/2025" },
+            { r: 1, c: "São João da Lagoa", rot: "Rota 3", d: "16/01/2026" },
+            { r: 1, c: "São João da Lagoa", rot: "Rota 2", d: "05/02/2026" },
+            { r: 1, c: "São João da Lagoa", rot: "Rota 1", d: "04/03/2026" },
 
-            // --- ROTA 6 ---
-            { data: '2025-12-09', cidade: 'Águas Vermelhas', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2025-12-10', cidade: 'Berizal', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2025-12-11', cidade: 'São João do Paraíso', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2025-12-12', cidade: 'Indaiabira', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2025-12-15', cidade: 'Santa Maria do Salto', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2025-12-16', cidade: 'Jacinto', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2025-12-17', cidade: 'Jordânia', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2025-12-18', cidade: 'Divisópolis', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-01-06', cidade: 'Águas Vermelhas', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-01-07', cidade: 'Berizal', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-01-08', cidade: 'São João do Paraíso', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-01-09', cidade: 'Indaiabira', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-01-13', cidade: 'Santa Maria do Salto', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-01-14', cidade: 'Jacinto', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-01-15', cidade: 'Jordânia', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-01-16', cidade: 'Divisópolis', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-02-04', cidade: 'Águas Vermelhas', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-02-04', cidade: 'Berizal', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-02-05', cidade: 'São João do Paraíso', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-02-05', cidade: 'Indaiabira', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-02-06', cidade: 'Vargem Grande', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-02-10', cidade: 'Santa Maria do Salto', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-02-10', cidade: 'Jacinto', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-02-11', cidade: 'Jordânia', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-02-11', cidade: 'Divisópolis', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-03-03', cidade: 'Águas Vermelhas', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-03-03', cidade: 'Berizal', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-03-04', cidade: 'São João do Paraíso', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-03-04', cidade: 'Indaiabira', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-03-05', cidade: 'Vargem Grande', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-03-10', cidade: 'Santa Maria do Salto', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-03-10', cidade: 'Jacinto', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-03-11', cidade: 'Jordânia', rota: 'Rota 6', hub: 'Teófilo Otoni' },
-            { data: '2026-03-11', cidade: 'Divisópolis', rota: 'Rota 6', hub: 'Teófilo Otoni' },
+            // REGIÃO 2
+            { r: 2, c: "Campo Azul", rot: "Rota 2", d: "18/12/2025" },
+            { r: 2, c: "Campo Azul", rot: "Rota 1", d: "08/01/2026" },
+            { r: 2, c: "Campo Azul", rot: "Rota 3", d: "10/02/2026" },
+            { r: 2, c: "Campo Azul", rot: "Rota 3", d: "10/03/2026" },
+            { r: 2, c: "Coração de Jesus", rot: "Rota 3", d: "12/12/2025" },
+            { r: 2, c: "Coração de Jesus", rot: "Rota 1", d: "16/01/2026" },
+            { r: 2, c: "Coração de Jesus", rot: "Rota 2", d: "12/02/2026" },
+            { r: 2, c: "Coração de Jesus", rot: "Rota 1", d: "12/03/2026" },
+            { r: 2, c: "Ibiaí", rot: "Rota 2", d: "10/12/2025" },
+            { r: 2, c: "Ibiaí", rot: "Rota 3", d: "14/01/2026" },
+            { r: 2, c: "Ibiaí", rot: "Rota 2", d: "04/02/2026" },
+            { r: 2, c: "Ibiaí", rot: "Rota 1", d: "03/03/2026" },
+            { r: 2, c: "Icaraí de Minas", rot: "Rota 2", d: "16/12/2025" },
+            { r: 2, c: "Icaraí de Minas", rot: "Rota 1", d: "06/01/2026" },
+            { r: 2, c: "Icaraí de Minas", rot: "Rota 3", d: "09/02/2026" },
+            { r: 2, c: "Icaraí de Minas", rot: "Rota 3", d: "09/03/2026" },
+            { r: 2, c: "Ponto Chique", rot: "Rota 2", d: "09/12/2025" },
+            { r: 2, c: "Ponto Chique", rot: "Rota 3", d: "13/01/2026" },
+            { r: 2, c: "Ponto Chique", rot: "Rota 2", d: "03/02/2026" },
+            { r: 2, c: "Ponto Chique", rot: "Rota 1", d: "02/03/2026" },
+            { r: 2, c: "Santa Fé de Minas", rot: "Rota 1", d: "09/12/2025" },
+            { r: 2, c: "Santa Fé de Minas", rot: "Rota 2", d: "13/01/2026" },
+            { r: 2, c: "Santa Fé de Minas", rot: "Rota 3", d: "03/02/2026" },
+            { r: 2, c: "Santa Fé de Minas", rot: "Rota 3", d: "02/03/2026" },
+            { r: 2, c: "São João do Pacuí", rot: "Rota 2", d: "19/12/2025" },
+            { r: 2, c: "São João do Pacuí", rot: "Rota 1", d: "09/01/2026" },
+            { r: 2, c: "São João do Pacuí", rot: "Rota 3", d: "11/02/2026" },
+            { r: 2, c: "São João do Pacuí", rot: "Rota 3", d: "11/03/2026" },
+            { r: 2, c: "São Romão", rot: "Rota 1", d: "08/12/2025" },
+            { r: 2, c: "São Romão", rot: "Rota 2", d: "12/01/2026" },
+            { r: 2, c: "São Romão", rot: "Rota 3", d: "03/02/2026" },
+            { r: 2, c: "São Romão", rot: "Rota 3", d: "02/03/2026" },
+            { r: 2, c: "Ubaí", rot: "Rota 2", d: "17/12/2025" },
+            { r: 2, c: "Ubaí", rot: "Rota 1", d: "07/01/2026" },
+            { r: 2, c: "Ubaí", rot: "Rota 3", d: "10/02/2026" },
+            { r: 2, c: "Ubaí", rot: "Rota 3", d: "10/03/2026" },
+            { r: 2, c: "Urucuia", rot: "Rota 1", d: "10/12/2025" },
+            { r: 2, c: "Urucuia", rot: "Rota 2", d: "14/01/2026" },
+            { r: 2, c: "Urucuia", rot: "Rota 3", d: "04/02/2026" },
+            { r: 2, c: "Urucuia", rot: "Rota 3", d: "03/03/2026" },
+
+            // REGIÃO 3
+            { r: 3, c: "Berilo", rot: "Rota 4", d: "15/12/2025" },
+            { r: 3, c: "Berilo", rot: "Rota 5", d: "12/01/2026" },
+            { r: 3, c: "Berilo", rot: "Rota 4", d: "10/02/2026" },
+            { r: 3, c: "Berilo", rot: "Rota 5", d: "10/03/2026" },
+            { r: 3, c: "Botumirim", rot: "Rota 3", d: "18/12/2025" },
+            { r: 3, c: "Botumirim", rot: "Rota 2", d: "08/01/2026" },
+            { r: 3, c: "Botumirim", rot: "Rota 1", d: "04/02/2026" },
+            { r: 3, c: "Botumirim", rot: "Rota 2", d: "03/03/2026" },
+            { r: 3, c: "Coronel Murta", rot: "Rota 4", d: "17/12/2025" },
+            { r: 3, c: "Coronel Murta", rot: "Rota 5", d: "14/01/2026" },
+            { r: 3, c: "Coronel Murta", rot: "Rota 4", d: "11/02/2026" },
+            { r: 3, c: "Coronel Murta", rot: "Rota 5", d: "11/03/2026" },
+            { r: 3, c: "Francisco Badaró", rot: "Rota 4", d: "11/12/2025" },
+            { r: 3, c: "Francisco Badaró", rot: "Rota 5", d: "08/01/2026" },
+            { r: 3, c: "Francisco Badaró", rot: "Rota 4", d: "05/02/2026" },
+            { r: 3, c: "Francisco Badaró", rot: "Rota 5", d: "04/03/2026" },
+            { r: 3, c: "Itinga", rot: "Rota 4", d: "16/12/2025" },
+            { r: 3, c: "Itinga", rot: "Rota 5", d: "13/01/2026" },
+            { r: 3, c: "Itinga", rot: "Rota 4", d: "10/02/2026" },
+            { r: 3, c: "Itinga", rot: "Rota 5", d: "10/03/2026" },
+            { r: 3, c: "Jenipapo de Minas", rot: "Rota 4", d: "12/12/2025" },
+            { r: 3, c: "Jenipapo de Minas", rot: "Rota 5", d: "09/01/2026" },
+            { r: 3, c: "Jenipapo de Minas", rot: "Rota 4", d: "06/02/2026" },
+            { r: 3, c: "Jenipapo de Minas", rot: "Rota 5", d: "05/03/2026" },
+            { r: 3, c: "José Gonçalves de Minas", rot: "Rota 4", d: "10/12/2025" },
+            { r: 3, c: "José Gonçalves de Minas", rot: "Rota 5", d: "07/01/2026" },
+            { r: 3, c: "José Gonçalves de Minas", rot: "Rota 4", d: "05/02/2026" },
+            { r: 3, c: "José Gonçalves de Minas", rot: "Rota 5", d: "04/03/2026" },
+            { r: 3, c: "Leme do Prado", rot: "Rota 4", d: "09/12/2025" },
+            { r: 3, c: "Leme do Prado", rot: "Rota 5", d: "06/01/2026" },
+            { r: 3, c: "Leme do Prado", rot: "Rota 4", d: "04/02/2026" },
+            { r: 3, c: "Leme do Prado", rot: "Rota 5", d: "03/03/2026" },
+            { r: 3, c: "Minas Novas", rot: "Rota 4", d: "08/12/2025" },
+            { r: 3, c: "Minas Novas", rot: "Rota 5", d: "05/01/2026" },
+            { r: 3, c: "Minas Novas", rot: "Rota 4", d: "04/02/2026" },
+            { r: 3, c: "Minas Novas", rot: "Rota 5", d: "03/03/2026" },
+
+            // REGIÃO 4
+            { r: 4, c: "Catuti", rot: "Rota 5", d: "19/12/2025" },
+            { r: 4, c: "Catuti", rot: "Rota 4", d: "16/01/2026" },
+            { r: 4, c: "Catuti", rot: "Rota 5", d: "11/02/2026" },
+            { r: 4, c: "Catuti", rot: "Rota 4", d: "10/03/2026" },
+            { r: 4, c: "Gameleiras", rot: "Rota 5", d: "11/12/2025" },
+            { r: 4, c: "Gameleiras", rot: "Rota 4", d: "08/01/2026" },
+            { r: 4, c: "Gameleiras", rot: "Rota 5", d: "05/02/2026" },
+            { r: 4, c: "Gameleiras", rot: "Rota 4", d: "03/03/2026" },
+            { r: 4, c: "Mamonas", rot: "Rota 5", d: "12/12/2025" },
+            { r: 4, c: "Mamonas", rot: "Rota 4", d: "09/01/2026" },
+            { r: 4, c: "Mamonas", rot: "Rota 5", d: "05/02/2026" },
+            { r: 4, c: "Mamonas", rot: "Rota 4", d: "03/03/2026" },
+            { r: 4, c: "Mato Verde", rot: "Rota 5", d: "10/12/2025" },
+            { r: 4, c: "Mato Verde", rot: "Rota 4", d: "07/01/2026" },
+            { r: 4, c: "Mato Verde", rot: "Rota 5", d: "04/02/2026" },
+            { r: 4, c: "Mato Verde", rot: "Rota 4", d: "02/03/2026" },
+            { r: 4, c: "Novorizonte", rot: "Rota 4", d: "18/12/2025" },
+            { r: 4, c: "Novorizonte", rot: "Rota 5", d: "15/01/2026" },
+            { r: 4, c: "Novorizonte", rot: "Rota 4", d: "11/02/2026" },
+            { r: 4, c: "Novorizonte", rot: "Rota 5", d: "11/03/2026" },
+            { r: 4, c: "Porteirinha", rot: "Rota 5", d: "17/12/2025" },
+            { r: 4, c: "Porteirinha", rot: "Rota 4", d: "14/01/2026" },
+            { r: 4, c: "Porteirinha", rot: "Rota 5", d: "10/02/2026" },
+            { r: 4, c: "Porteirinha", rot: "Rota 4", d: "09/03/2026" },
+            { r: 4, c: "Riacho dos Machados", rot: "Rota 5", d: "16/12/2025" },
+            { r: 4, c: "Riacho dos Machados", rot: "Rota 4", d: "13/01/2026" },
+            { r: 4, c: "Riacho dos Machados", rot: "Rota 5", d: "10/02/2026" },
+            { r: 4, c: "Riacho dos Machados", rot: "Rota 4", d: "09/03/2026" },
+            { r: 4, c: "Rio Pardo de Minas", rot: "Rota 5", d: "08/12/2025" },
+            { r: 4, c: "Rio Pardo de Minas", rot: "Rota 4", d: "05/01/2026" },
+            { r: 4, c: "Rio Pardo de Minas", rot: "Rota 5", d: "04/02/2026" },
+            { r: 4, c: "Rio Pardo de Minas", rot: "Rota 4", d: "02/03/2026" },
+            { r: 4, c: "Serranopolis de Minas", rot: "Rota 5", d: "18/12/2025" },
+            { r: 4, c: "Serranopolis de Minas", rot: "Rota 4", d: "15/01/2026" },
+            { r: 4, c: "Serranopolis de Minas", rot: "Rota 5", d: "11/02/2026" },
+            { r: 4, c: "Serranopolis de Minas", rot: "Rota 4", d: "10/03/2026" },
+
+            // REGIÃO 5
+            { r: 5, c: "Águas Vermelhas", rot: "Rota 6", d: "09/12/2025" },
+            { r: 5, c: "Águas Vermelhas", rot: "Rota 6", d: "06/01/2026" },
+            { r: 5, c: "Águas Vermelhas", rot: "Rota 6", d: "04/02/2026" },
+            { r: 5, c: "Águas Vermelhas", rot: "Rota 6", d: "03/03/2026" },
+            { r: 5, c: "Berizal", rot: "Rota 6", d: "10/12/2025" },
+            { r: 5, c: "Berizal", rot: "Rota 6", d: "07/01/2026" },
+            { r: 5, c: "Berizal", rot: "Rota 6", d: "04/02/2026" },
+            { r: 5, c: "Berizal", rot: "Rota 6", d: "03/03/2026" },
+            { r: 5, c: "Divisópolis", rot: "Rota 6", d: "18/12/2025" },
+            { r: 5, c: "Divisópolis", rot: "Rota 6", d: "16/01/2026" },
+            { r: 5, c: "Divisópolis", rot: "Rota 6", d: "11/02/2026" },
+            { r: 5, c: "Divisópolis", rot: "Rota 6", d: "11/03/2026" },
+            { r: 5, c: "Indaiabira", rot: "Rota 6", d: "12/12/2025" },
+            { r: 5, c: "Indaiabira", rot: "Rota 6", d: "09/01/2026" },
+            { r: 5, c: "Indaiabira", rot: "Rota 6", d: "05/02/2026" },
+            { r: 5, c: "Indaiabira", rot: "Rota 6", d: "04/03/2026" },
+            { r: 5, c: "Jacinto", rot: "Rota 6", d: "16/12/2025" },
+            { r: 5, c: "Jacinto", rot: "Rota 6", d: "14/01/2026" },
+            { r: 5, c: "Jacinto", rot: "Rota 6", d: "10/02/2026" },
+            { r: 5, c: "Jacinto", rot: "Rota 6", d: "10/03/2026" },
+            { r: 5, c: "Jordânia", rot: "Rota 6", d: "17/12/2025" },
+            { r: 5, c: "Jordânia", rot: "Rota 6", d: "15/01/2026" },
+            { r: 5, c: "Jordânia", rot: "Rota 6", d: "11/02/2026" },
+            { r: 5, c: "Jordânia", rot: "Rota 6", d: "11/03/2026" },
+            { r: 5, c: "Santa Maria do Salto", rot: "Rota 6", d: "15/12/2025" },
+            { r: 5, c: "Santa Maria do Salto", rot: "Rota 6", d: "13/01/2026" },
+            { r: 5, c: "Santa Maria do Salto", rot: "Rota 6", d: "10/02/2026" },
+            { r: 5, c: "Santa Maria do Salto", rot: "Rota 6", d: "10/03/2026" },
+            { r: 5, c: "São João do Paraíso", rot: "Rota 6", d: "11/12/2025" },
+            { r: 5, c: "São João do Paraíso", rot: "Rota 6", d: "08/01/2026" },
+            { r: 5, c: "São João do Paraíso", rot: "Rota 6", d: "05/02/2026" },
+            { r: 5, c: "São João do Paraíso", rot: "Rota 6", d: "04/03/2026" },
+            { r: 5, c: "Vargem Grande", rot: "Rota 5", d: "09/12/2025" },
+            { r: 5, c: "Vargem Grande", rot: "Rota 4", d: "06/01/2026" },
+            { r: 5, c: "Vargem Grande", rot: "Rota 6", d: "06/02/2026" },
+            { r: 5, c: "Vargem Grande", rot: "Rota 6", d: "05/03/2026" },
+
+            // REGIÃO 6
+            { r: 6, c: "Capitão Eneas", rot: "Rota 3", d: "11/12/2025" },
+            { r: 6, c: "Capitão Eneas", rot: "Rota 1", d: "15/01/2026" },
+            { r: 6, c: "Capitão Eneas", rot: "Rota 2", d: "11/02/2026" },
+            { r: 6, c: "Capitão Eneas", rot: "Rota 1", d: "11/03/2026" },
+            { r: 6, c: "Chapada Gaúcha", rot: "Rota 1", d: "11/12/2025" },
+            { r: 6, c: "Chapada Gaúcha", rot: "Rota 2", d: "15/01/2026" },
+            { r: 6, c: "Chapada Gaúcha", rot: "Rota 3", d: "04/02/2026" },
+            { r: 6, c: "Chapada Gaúcha", rot: "Rota 3", d: "03/03/2026" },
+            { r: 6, c: "Jaíba", rot: "Rota 1", d: "18/12/2025" },
+            { r: 6, c: "Jaíba", rot: "Rota 3", d: "08/01/2026" },
+            { r: 6, c: "Jaíba", rot: "Rota 1", d: "11/02/2026" },
+            { r: 6, c: "Jaíba", rot: "Rota 2", d: "11/03/2026" },
+            { r: 6, c: "Japonvar", rot: "Rota 3", d: "10/12/2025" },
+            { r: 6, c: "Japonvar", rot: "Rota 1", d: "14/01/2026" },
+            { r: 6, c: "Japonvar", rot: "Rota 2", d: "10/02/2026" },
+            { r: 6, c: "Japonvar", rot: "Rota 1", d: "10/03/2026" },
+            { r: 6, c: "Luislândia", rot: "Rota 2", d: "15/12/2025" },
+            { r: 6, c: "Luislândia", rot: "Rota 1", d: "05/01/2026" },
+            { r: 6, c: "Luislândia", rot: "Rota 3", d: "09/02/2026" },
+            { r: 6, c: "Luislândia", rot: "Rota 3", d: "09/03/2026" },
+            { r: 6, c: "Matias Cardoso", rot: "Rota 1", d: "19/12/2025" },
+            { r: 6, c: "Matias Cardoso", rot: "Rota 3", d: "09/01/2026" },
+            { r: 6, c: "Matias Cardoso", rot: "Rota 1", d: "11/02/2026" },
+            { r: 6, c: "Matias Cardoso", rot: "Rota 2", d: "11/03/2026" },
+            { r: 6, c: "Mirabela", rot: "Rota 3", d: "09/12/2025" },
+            { r: 6, c: "Mirabela", rot: "Rota 1", d: "13/01/2026" },
+            { r: 6, c: "Mirabela", rot: "Rota 2", d: "09/02/2026" },
+            { r: 6, c: "Mirabela", rot: "Rota 1", d: "09/03/2026" },
+            { r: 6, c: "Montalvânia", rot: "Rota 1", d: "12/12/2025" },
+            { r: 6, c: "Montalvânia", rot: "Rota 2", d: "16/01/2026" },
+            { r: 6, c: "Montalvânia", rot: "Rota 3", d: "05/02/2026" },
+            { r: 6, c: "Montalvânia", rot: "Rota 3", d: "04/03/2026" },
+            { r: 6, c: "Patis", rot: "Rota 3", d: "08/12/2025" },
+            { r: 6, c: "Patis", rot: "Rota 1", d: "12/01/2026" },
+            { r: 6, c: "Patis", rot: "Rota 2", d: "09/02/2026" },
+            { r: 6, c: "Patis", rot: "Rota 1", d: "09/03/2026" }
         ];
 
-        function App() {
-            const [sortOrder, setSortOrder] = useState('asc'); // 'asc' | 'desc'
-            const [filterMonth, setFilterMonth] = useState('Todos');
-            const [filterCity, setFilterCity] = useState('Todas'); // Novo filtro de cidade
-            const [showShareToast, setShowShareToast] = useState(false); // Estado para o toast de compartilhamento
-
-            // Estado do Chat
-            const [isChatOpen, setIsChatOpen] = useState(false);
-            const [chatMessages, setChatMessages] = useState([
-                { role: 'assistant', text: 'Olá! Sou o seu Assistente de Logística da APJ. ✨\n\nPosso ajudar com informações sobre datas, cidades, rotas e localização das equipas. Pergunte-me algo!' }
-            ]);
-            const [userMessage, setUserMessage] = useState('');
-            const [isAiLoading, setIsAiLoading] = useState(false);
-            const chatEndRef = useRef(null);
-
-            // Estado do Relatório
-            const [showReportModal, setShowReportModal] = useState(false);
-            const [reportContent, setReportContent] = useState('');
-            const [isReportLoading, setIsReportLoading] = useState(false);
-
-            // Formatação de Data amigável
-            const formatDate = (dateStr) => {
-                const [year, month, day] = dateStr.split('-');
-                const date = new Date(year, month - 1, day);
-                return date.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', weekday: 'short' });
+        // Process data to add JS Date objects and sortable keys
+        const processedData = rawData.map(item => {
+            const parts = item.d.split('/');
+            const jsDate = new Date(parts[2], parts[1] - 1, parts[0]);
+            return {
+                ...item,
+                jsDate: jsDate,
+                day: parts[0],
+                monthKey: parts[1], // "12", "01"
+                year: parts[2]
             };
+        }).sort((a, b) => a.jsDate - b.jsDate); // Sort chronologically
 
-            // Helper para Status
-            const getStatus = (dateStr) => {
-                const today = new Date().toISOString().split('T')[0];
-                if (dateStr < today) return { label: 'Concluído', color: 'bg-stone-200 text-stone-600' };
-                if (dateStr === today) return { label: 'Hoje', color: 'bg-yellow-200 text-yellow-900' };
-                return { label: 'Programado', color: 'bg-orange-50 text-orange-800' };
-            };
+        // --- DOM ELEMENTS ---
+        const regionFilter = document.getElementById('regionFilter');
+        const cityFilter = document.getElementById('cityFilter');
+        const monthFilter = document.getElementById('monthFilter');
+        const clearBtn = document.getElementById('clearFilters');
+        const grid = document.getElementById('eventsGrid');
+        const emptyState = document.getElementById('emptyState');
+        const countLabel = document.getElementById('resultsCount');
 
-            // Extrair lista única de cidades para o dropdown
-            const uniqueCities = useMemo(() => {
-                const cities = new Set(fullSchedule.map(item => item.cidade));
-                return ['Todas', ...Array.from(cities).sort()];
-            }, []);
+        // --- POPULATE CITY FILTER ---
+        function populateCityFilter() {
+            const cities = [...new Set(processedData.map(d => d.c))].sort();
+            cityFilter.innerHTML = '<option value="">Cidade: Todas</option>';
+            cities.forEach(city => {
+                const opt = document.createElement('option');
+                opt.value = city;
+                opt.textContent = city;
+                cityFilter.appendChild(opt);
+            });
+        }
+        populateCityFilter();
 
-            // Filtragem e Ordenação
-            const filteredData = useMemo(() => {
-                return fullSchedule
-                .filter(item => {
-                    const matchesMonth = filterMonth === 'Todos' || item.data.split('-')[1] === filterMonth;
-                    const matchesCity = filterCity === 'Todas' || item.cidade === filterCity;
-                    return matchesMonth && matchesCity;
-                })
-                .sort((a, b) => {
-                    if (sortOrder === 'asc') return a.data.localeCompare(b.data);
-                    return b.data.localeCompare(a.data);
-                });
-            }, [filterMonth, filterCity, sortOrder]);
+        // --- RENDER FUNCTION ---
+        function render() {
+            const selectedRegion = regionFilter.value;
+            const selectedCity = cityFilter.value;
+            const selectedMonth = monthFilter.value;
 
-            // Função para compartilhar
-            const handleShare = () => {
-                const dummyLink = window.location.href; // Copia o link atual
+            const filtered = processedData.filter(item => {
+                const matchRegion = selectedRegion ? item.r.toString() === selectedRegion : true;
+                const matchCity = selectedCity ? item.c === selectedCity : true;
+                const matchMonth = selectedMonth ? item.monthKey === selectedMonth : true;
+                return matchRegion && matchCity && matchMonth;
+            });
 
-                // Fallback para iFrames/Ambientes restritos
-                const textArea = document.createElement("textarea");
-                textArea.value = dummyLink;
+            grid.innerHTML = '';
+            countLabel.textContent = `${filtered.length} evento(s)`;
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
                 
-                // Assegurar que o textarea não seja visível
-                textArea.style.position = "fixed";
-                textArea.style.left = "-9999px";
-                textArea.style.top = "0";
-                document.body.appendChild(textArea);
-                
-                textArea.focus();
-                textArea.select();
-
-                try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    setShowShareToast(true);
-                    setTimeout(() => setShowShareToast(false), 3000);
-                } else {
-                    console.error('Fallback: Copying text command was unsuccessful');
-                }
-                } catch (err) {
-                console.error('Fallback: Oops, unable to copy', err);
-                }
-
-                document.body.removeChild(textArea);
-            };
-
-            // Função para chamar a API Gemini
-            const callGemini = async (prompt, type = 'chat') => {
-                const apiKey = ""; // Chave injetada pelo ambiente
-                
-                if (type === 'chat') {
-                setIsAiLoading(true);
-                setChatMessages(prev => [...prev, { role: 'user', text: prompt }]);
-                setUserMessage('');
-                } else {
-                setIsReportLoading(true);
-                setShowReportModal(true);
-                }
-
-                try {
-                const systemPrompt = `Você é um assistente de logística inteligente para a APJ (Associação Pública do Jequitinhonha e Norte de Minas).
-                Você tem acesso total ao cronograma de visitas (JSON fornecido no contexto se necessário).
-                
-                Instruções Específicas:
-                1. Se for um CHAT, responda curto e amigável em Português de Portugal.
-                2. Se for um RELATÓRIO (Report), gere um resumo executivo formal contendo:
-                    - Resumo das atividades filtradas.
-                    - Cidades-chave a serem visitadas.
-                    - Alertas de riscos logísticos (baseado em distâncias ou volume de cidades).
-                    - Conclusão motivadora para a equipa.
-                `;
-
-                const finalPrompt = type === 'report' 
-                    ? `Gere um Relatório Executivo Formal para os seguintes dados filtrados: ${JSON.stringify(filteredData.slice(0, 50))}... (resumo). Foco em planeamento estratégico.` 
-                    : prompt;
-
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: {
-                    'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                    contents: [{ parts: [{ text: finalPrompt }] }],
-                    systemInstruction: { parts: [{ text: systemPrompt }] }
-                    })
-                });
-
-                const data = await response.json();
-                const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Não foi possível gerar a resposta.";
-                
-                if (type === 'chat') {
-                    setChatMessages(prev => [...prev, { role: 'assistant', text: aiText }]);
-                } else {
-                    setReportContent(aiText);
-                }
-
-                } catch (error) {
-                console.error("Erro na IA:", error);
-                const errorMsg = "Ocorreu um erro ao contactar o assistente.";
-                if (type === 'chat') setChatMessages(prev => [...prev, { role: 'assistant', text: errorMsg }]);
-                else setReportContent(errorMsg);
-                } finally {
-                setIsAiLoading(false);
-                setIsReportLoading(false);
-                }
-            };
-
-            // Scroll para o fim do chat
-            useEffect(() => {
-                chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-            }, [chatMessages, isChatOpen]);
-
-            return (
-                <div className="min-h-screen bg-stone-50 font-sans relative pb-20">
-                
-                {/* --- TOAST DE COMPARTILHAMENTO --- */}
-                {showShareToast && (
-                    <div className="fixed top-4 right-4 z-50 bg-stone-900 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
-                    <div className="p-1 bg-green-500 rounded-full">
-                        <CheckCircle className="w-4 h-4 text-white" />
-                    </div>
-                    <div>
-                        <p className="text-sm font-bold">Link copiado!</p>
-                        <p className="text-xs text-stone-300">O link do projeto foi copiado para a área de transferência.</p>
-                    </div>
-                    </div>
-                )}
-
-                {/* --- CABEÇALHO VISUAL CENTRALIZADO --- */}
-                <div className="relative h-96 w-full overflow-hidden bg-rose-950 shadow-2xl">
-                    <img 
-                        src="https://images.unsplash.com/photo-1596329705480-1c3904977209?q=80&w=2070&auto=format&fit=crop" 
-                        alt="Colagem Artística Oficina" 
-                        className="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-overlay"
-                    />
+                filtered.forEach(item => {
+                    // Styles based on Route
+                    let borderClass = "border-l-4 border-red-500";
+                    let bgIcon = "bg-red-50 text-red-600 border border-red-100";
                     
-                    {/* Overlay Gradiente */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-rose-950 via-rose-900/60 to-transparent"></div>
+                    if(item.rot.includes("Rota 2") || item.rot.includes("Rota 4")) {
+                        borderClass = "border-l-4 border-orange-500";
+                        bgIcon = "bg-orange-50 text-orange-600 border border-orange-100";
+                    } else if (item.rot.includes("Rota 3") || item.rot.includes("Rota 5") || item.rot.includes("Rota 6")) {
+                        borderClass = "border-l-4 border-yellow-500";
+                        bgIcon = "bg-yellow-50 text-yellow-600 border border-yellow-100";
+                    }
+
+                    const card = document.createElement('div');
+                    // Compact Row Layout
+                    card.className = `bg-white rounded-md p-3 card-shadow ${borderClass} flex items-center justify-between gap-3`;
                     
-                    {/* Botão de Compartilhar no Cabeçalho */}
-                    <div className="absolute top-6 right-6 z-20">
-                    <button 
-                        onClick={handleShare}
-                        className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white rounded-full transition-all text-sm font-medium"
-                    >
-                        <LinkIcon className="w-4 h-4" />
-                        <span>Compartilhar</span>
-                    </button>
-                    </div>
-                    
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 z-10">
-                        <div className="flex items-center gap-2 mb-4">
-                            <span className="px-4 py-1.5 bg-yellow-500 text-rose-950 text-sm font-bold uppercase tracking-widest rounded-full shadow-lg shadow-yellow-500/20 animate-fade-in-up">
-                                Planejamento 2025/26
-                            </span>
-                        </div>
-                        <h1 className="text-5xl md:text-7xl font-extrabold text-white tracking-tight drop-shadow-lg leading-tight mb-4">
-                            Roteiro Oficinas <br/> <span className="text-yellow-400">Percursos Gerais</span>
-                        </h1>
-                        <p className="text-rose-100 max-w-2xl text-lg md:text-xl font-light opacity-90">
-                            Acompanhamento estratégico e logística integrada para o Jequitinhonha e Norte de Minas.
-                        </p>
-                    </div>
-                </div>
+                    const monthName = item.jsDate.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '');
+                    const weekday = item.jsDate.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '');
 
-                <div className="max-w-7xl mx-auto -mt-16 px-4 relative z-20">
-                    <div className="bg-white rounded-xl shadow-xl border border-stone-200 overflow-hidden">
-                    
-                    {/* Barra de Ferramentas */}
-                    <div className="p-6 border-b border-stone-100 bg-white">
-                        <div className="flex flex-col lg:flex-row justify-between items-end gap-6">
-                        
-                        {/* Filtros: Mês e Cidade */}
-                        <div className="flex flex-wrap gap-4 w-full lg:w-auto">
-                            <div className="relative group w-full sm:w-auto">
-                            <label className="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-1 ml-1">Mês</label>
-                            <div className="relative">
-                                <select 
-                                value={filterMonth}
-                                onChange={(e) => setFilterMonth(e.target.value)}
-                                className="w-full sm:w-56 pl-10 pr-8 py-3 bg-stone-50 border-2 border-stone-100 rounded-lg text-sm font-semibold text-stone-700 focus:border-yellow-500 focus:ring-0 outline-none appearance-none cursor-pointer transition-all"
-                                >
-                                <option value="Todos">Todos os Meses</option>
-                                <option value="12">Dezembro</option>
-                                <option value="01">Janeiro</option>
-                                <option value="02">Fevereiro</option>
-                                <option value="03">Março</option>
-                                </select>
-                                <Calendar className="absolute left-3 top-3.5 w-4 h-4 text-stone-400 group-hover:text-yellow-600 transition-colors pointer-events-none" />
+                    card.innerHTML = `
+                        <div class="flex items-center gap-3 md:gap-4 overflow-hidden">
+                            <!-- Date Box -->
+                            <div class="flex flex-col items-center justify-center bg-gray-50 rounded px-2 py-1 min-w-[3.5rem] border border-gray-100">
+                                <span class="text-[10px] uppercase font-bold text-gray-500 leading-tight">${monthName}</span>
+                                <span class="text-lg font-bold text-gray-800 leading-tight">${item.day}</span>
                             </div>
-                            </div>
-
-                            <div className="relative group w-full sm:w-auto">
-                            <label className="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-1 ml-1">Cidade</label>
-                            <div className="relative">
-                                <select 
-                                value={filterCity}
-                                onChange={(e) => setFilterCity(e.target.value)}
-                                className="w-full sm:w-64 pl-10 pr-8 py-3 bg-stone-50 border-2 border-stone-100 rounded-lg text-sm font-semibold text-stone-700 focus:border-yellow-500 focus:ring-0 outline-none appearance-none cursor-pointer transition-all"
-                                >
-                                {uniqueCities.map(city => (
-                                    <option key={city} value={city}>{city}</option>
-                                ))}
-                                </select>
-                                <MapPin className="absolute left-3 top-3.5 w-4 h-4 text-stone-400 group-hover:text-yellow-600 transition-colors pointer-events-none" />
-                            </div>
-                            </div>
-                        </div>
-
-                        {/* Botão Gemini Report (Vermelho Vinho) */}
-                        <div className="w-full lg:w-auto">
-                            <button 
-                            onClick={() => callGemini(null, 'report')}
-                            className="w-full lg:w-auto flex items-center justify-center gap-2 px-8 py-3.5 bg-rose-800 hover:bg-rose-900 text-white font-bold rounded-lg shadow-md shadow-rose-900/20 transition-all active:scale-95 group"
-                            >
-                            <Sparkles className="w-4 h-4 group-hover:animate-pulse text-yellow-400" />
-                            <span>Gerar Relatório IA</span>
-                            </button>
-                        </div>
-                        </div>
-
-                        {/* Contador de Resultados */}
-                        <div className="mt-6 flex items-center gap-2 text-xs text-stone-500 font-medium uppercase tracking-wider border-t border-stone-100 pt-4">
-                        <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
-                        {filteredData.length} resultados encontrados
-                        </div>
-                    </div>
-
-                    {/* Tabela */}
-                    <div className="overflow-x-auto min-h-[500px]">
-                        <table className="min-w-full divide-y divide-stone-100">
-                        <thead className="bg-orange-50/30">
-                            <tr>
-                            <th 
-                                scope="col" 
-                                className="px-6 py-4 text-left text-xs font-bold text-stone-500 uppercase tracking-wider cursor-pointer hover:text-orange-700 transition-colors"
-                                onClick={() => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
-                            >
-                                <div className="flex items-center gap-1">
-                                Data
-                                <ArrowUpDown className="w-3 h-3" />
-                                </div>
-                            </th>
-                            <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-stone-500 uppercase tracking-wider">
-                                Cidade / Destino
-                            </th>
-                            <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-stone-500 uppercase tracking-wider hidden sm:table-cell">
-                                Equipa
-                            </th>
-                            <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-stone-500 uppercase tracking-wider hidden md:table-cell">
-                                Base (Hub)
-                            </th>
-                            <th scope="col" className="px-6 py-4 text-right text-xs font-bold text-stone-500 uppercase tracking-wider">
-                                Status
-                            </th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-stone-50">
-                            {filteredData.map((item, idx) => {
-                            const status = getStatus(item.data);
-                            return (
-                                <tr key={idx} className="hover:bg-yellow-50/50 transition-colors group">
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                    <div className="text-sm font-bold text-stone-700 group-hover:text-rose-800 transition-colors">{formatDate(item.data)}</div>
-                                    <div className="text-xs text-stone-400 font-normal mt-0.5">{item.data.split('-')[0]}</div>
-                                </td>
-                                <td 
-                                    className="px-6 py-4 whitespace-nowrap"
-                                    onClick={() => {
-                                    if (!isChatOpen) setIsChatOpen(true);
-                                    callGemini(`Resumo rápido sobre ${item.cidade}:`, 'chat');
-                                    }} 
-                                    title="Ver detalhes com IA"
-                                >
-                                    <div className="flex items-center gap-2 cursor-pointer">
-                                    <span className="text-sm font-semibold text-stone-800 group-hover:text-orange-700 transition-colors">{item.cidade}</span>
-                                    <Bot className="w-3 h-3 text-stone-300 opacity-0 group-hover:opacity-100 transition-opacity text-rose-800" />
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
-                                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border 
-                                        ${item.rota.includes('4') || item.rota.includes('5') ? 'bg-rose-50 text-rose-800 border-rose-100' : 'bg-orange-50 text-orange-800 border-orange-100'}`}>
-                                    {item.rota}
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-500 hidden md:table-cell">
-                                    {item.hub}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-right">
-                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded text-xs font-semibold ${status.color}`}>
-                                    {status.label === 'Concluído' ? <CheckCircle className="w-3 h-3" /> : <div className="w-2 h-2 rounded-full bg-current"></div>}
-                                    {status.label}
-                                    </span>
-                                </td>
-                                </tr>
-                            );
-                            })}
                             
-                            {filteredData.length === 0 && (
-                            <tr>
-                                <td colSpan="5" className="px-6 py-24 text-center text-stone-400">
-                                <div className="flex flex-col items-center gap-3">
-                                    <Filter className="w-10 h-10 opacity-20" />
-                                    <p className="text-lg font-medium">Nenhum resultado encontrado.</p>
-                                    <p className="text-sm">Tente ajustar os filtros de mês ou cidade.</p>
-                                </div>
-                                </td>
-                            </tr>
-                            )}
-                        </tbody>
-                        </table>
-                    </div>
-                    </div>
-                </div>
-
-                {/* --- MODAL DE RELATÓRIO GEMINI --- */}
-                {showReportModal && (
-                    <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col animate-in zoom-in-95 duration-200">
-                        <div className="p-6 border-b border-stone-100 flex justify-between items-center bg-stone-50 rounded-t-2xl">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-yellow-100 rounded-lg text-yellow-700">
-                            <FileText className="w-6 h-6" />
+                            <!-- Info -->
+                            <div class="min-w-0">
+                                <h3 class="font-bold text-gray-800 text-sm truncate flex items-center gap-2">
+                                    ${item.c}
+                                    <span class="text-[10px] font-normal bg-gray-100 text-gray-500 px-1.5 rounded hidden sm:inline-block">Região ${item.r}</span>
+                                </h3>
+                                <p class="text-xs text-gray-500 flex items-center mt-0.5 truncate">
+                                    <span class="capitalize">${weekday}</span> <span class="mx-1">•</span> ${item.d}
+                                </p>
                             </div>
-                            <div>
-                            <h3 className="font-bold text-stone-800 text-lg">Relatório Executivo</h3>
-                            <p className="text-xs text-stone-500">Gerado por Gemini IA</p>
-                            </div>
-                        </div>
-                        <button onClick={() => setShowReportModal(false)} className="text-stone-400 hover:text-rose-600 transition-colors">
-                            <X className="w-6 h-6" />
-                        </button>
-                        </div>
-                        
-                        <div className="p-8 overflow-y-auto flex-1 bg-white">
-                        {isReportLoading ? (
-                            <div className="flex flex-col items-center justify-center py-12 space-y-4">
-                            <Loader className="w-10 h-10 text-yellow-500 animate-spin" />
-                            <p className="text-stone-500 font-medium animate-pulse">A analisar a logística...</p>
-                            </div>
-                        ) : (
-                            <div className="prose prose-stone prose-sm max-w-none">
-                            <div className="whitespace-pre-line text-stone-700 leading-relaxed font-medium">
-                                {reportContent}
-                            </div>
-                            </div>
-                        )}
                         </div>
 
-                        <div className="p-4 border-t border-stone-100 bg-stone-50 rounded-b-2xl flex justify-end gap-3">
-                        <button 
-                            onClick={() => setShowReportModal(false)}
-                            className="px-4 py-2 text-stone-600 font-medium hover:bg-stone-200 rounded-lg transition-colors"
-                        >
-                            Fechar
-                        </button>
-                        <button className="flex items-center gap-2 px-4 py-2 bg-rose-800 hover:bg-rose-900 text-white font-medium rounded-lg shadow-sm transition-colors">
-                            <Share2 className="w-4 h-4" />
-                            Exportar PDF
-                        </button>
+                        <!-- Badge -->
+                        <div class="shrink-0 flex flex-col items-end gap-1">
+                            <span class="inline-flex items-center rounded-full ${bgIcon} px-2.5 py-0.5 text-[10px] md:text-xs font-bold shadow-sm whitespace-nowrap">
+                                ${item.rot}
+                            </span>
+                            <span class="sm:hidden text-[9px] text-gray-400">Região ${item.r}</span>
                         </div>
-                    </div>
-                    </div>
-                )}
-
-                {/* --- WIDGET CHAT --- */}
-                <button
-                    onClick={() => setIsChatOpen(!isChatOpen)}
-                    className="fixed bottom-6 right-6 p-4 bg-rose-900 hover:bg-rose-950 text-white rounded-full shadow-2xl hover:scale-110 transition-all duration-300 z-50 border-2 border-orange-500/30"
-                >
-                    {isChatOpen ? <X className="w-6 h-6" /> : <Bot className="w-6 h-6" />}
-                </button>
-
-                {isChatOpen && (
-                    <div className="fixed bottom-24 right-6 w-80 sm:w-96 max-w-[calc(100vw-3rem)] h-[500px] bg-white rounded-2xl shadow-2xl border border-stone-200 z-50 flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 fade-in duration-300">
-                    <div className="p-4 bg-rose-900 text-white flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                        <Sparkles className="w-5 h-5 text-yellow-400" />
-                        <div>
-                            <h3 className="font-bold text-sm">Assistente IA</h3>
-                            <p className="text-rose-200 text-xs">Suporte Logístico 24/7</p>
-                        </div>
-                        </div>
-                        <button onClick={() => setIsChatOpen(false)} className="hover:text-white text-rose-300 transition-colors">
-                        <X className="w-4 h-4" />
-                        </button>
-                    </div>
-
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-stone-50">
-                        {chatMessages.map((msg, idx) => (
-                        <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm shadow-sm whitespace-pre-line ${
-                                msg.role === 'user' ? 'bg-yellow-500 text-rose-950 font-medium rounded-tr-none' : 'bg-white text-stone-700 border border-stone-200 rounded-tl-none'
-                            }`}>
-                            {msg.text}
-                            </div>
-                        </div>
-                        ))}
-                        {isAiLoading && (
-                        <div className="flex justify-start">
-                            <div className="bg-white rounded-2xl rounded-tl-none px-4 py-3 border border-stone-100 shadow-sm flex items-center gap-2">
-                            <Loader className="w-4 h-4 text-orange-500 animate-spin" />
-                            <span className="text-xs text-stone-400">A processar...</span>
-                            </div>
-                        </div>
-                        )}
-                        <div ref={chatEndRef} />
-                    </div>
-
-                    <div className="p-4 bg-white border-t border-stone-100">
-                        <form onSubmit={(e) => { e.preventDefault(); if (userMessage.trim()) callGemini(userMessage, 'chat'); }} className="flex gap-2">
-                        <input
-                            type="text"
-                            value={userMessage}
-                            onChange={(e) => setUserMessage(e.target.value)}
-                            placeholder="Pergunte sobre datas..."
-                            className="flex-1 bg-stone-50 border-2 border-stone-200 rounded-full px-4 py-2 text-sm focus:border-yellow-500 focus:ring-0 outline-none"
-                            disabled={isAiLoading}
-                        />
-                        <button type="submit" disabled={!userMessage.trim() || isAiLoading} className="p-2 bg-rose-800 hover:bg-rose-900 text-white rounded-full transition-colors disabled:opacity-50">
-                            <Send className="w-4 h-4" />
-                        </button>
-                        </form>
-                    </div>
-                    </div>
-                )}
-                </div>
-            );
+                    `;
+                    grid.appendChild(card);
+                });
+            }
         }
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        // --- EVENT LISTENERS ---
+        regionFilter.addEventListener('change', render);
+        cityFilter.addEventListener('change', render);
+        monthFilter.addEventListener('change', render);
+
+        clearBtn.addEventListener('click', () => {
+            regionFilter.value = "";
+            cityFilter.value = "";
+            monthFilter.value = "";
+            render();
+        });
+
+        // Initial Render
+        render();
+        lucide.createIcons();
+
     </script>
 </body>
 </html>
