@@ -27,6 +27,43 @@
             transform: translateX(4px);
             box-shadow: 0 4px 6px -1px rgba(234, 88, 12, 0.1), 0 2px 4px -1px rgba(234, 88, 12, 0.06);
         }
+
+        /* Custom Checkbox Style */
+        .custom-checkbox {
+            appearance: none;
+            background-color: #fff;
+            margin: 0;
+            font: inherit;
+            color: currentColor;
+            width: 1.25em;
+            height: 1.25em;
+            border: 2px solid #ea580c;
+            border-radius: 0.25em;
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .custom-checkbox::before {
+            content: "";
+            width: 0.65em;
+            height: 0.65em;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em white;
+            transform-origin: center;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+
+        .custom-checkbox:checked {
+            background-color: #ea580c;
+            border-color: #ea580c;
+        }
+
+        .custom-checkbox:checked::before {
+            transform: scale(1);
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -89,6 +126,14 @@
                         <i data-lucide="x-circle" class="w-3 h-3"></i>
                         Limpar
                     </button>
+                </div>
+            </div>
+            
+            <!-- Progress Bar (Optional Visual) -->
+            <div class="mt-2 flex items-center gap-2 text-xs text-gray-500">
+                <span id="progressText">0% Concluído</span>
+                <div class="flex-grow bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                    <div id="progressBar" class="bg-green-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
                 </div>
             </div>
         </div>
@@ -365,16 +410,37 @@
             { r: 6, c: "Patis", rot: "Rota 1", d: "09/03/2026" }
         ];
 
-        // Process data to add JS Date objects and sortable keys
+        // --- STATE MANAGEMENT ---
+        const getStoredState = () => {
+            const stored = localStorage.getItem('oficinasCompleted');
+            return stored ? new Set(JSON.parse(stored)) : new Set();
+        };
+
+        const completedState = getStoredState();
+
+        const toggleState = (id) => {
+            if (completedState.has(id)) {
+                completedState.delete(id);
+            } else {
+                completedState.add(id);
+            }
+            localStorage.setItem('oficinasCompleted', JSON.stringify([...completedState]));
+            render();
+        };
+
+        // Process data to add JS Date objects, unique IDs and sortable keys
         const processedData = rawData.map(item => {
             const parts = item.d.split('/');
             const jsDate = new Date(parts[2], parts[1] - 1, parts[0]);
+            // Create a unique ID for state tracking: City-Date
+            const uniqueId = `${item.c}-${item.d}`.replace(/\s+/g, '-').toLowerCase();
             return {
                 ...item,
                 jsDate: jsDate,
                 day: parts[0],
                 monthKey: parts[1], // "12", "01"
-                year: parts[2]
+                year: parts[2],
+                id: uniqueId
             };
         }).sort((a, b) => a.jsDate - b.jsDate); // Sort chronologically
 
@@ -386,6 +452,8 @@
         const grid = document.getElementById('eventsGrid');
         const emptyState = document.getElementById('emptyState');
         const countLabel = document.getElementById('resultsCount');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
 
         // --- POPULATE CITY FILTER ---
         function populateCityFilter() {
@@ -399,6 +467,15 @@
             });
         }
         populateCityFilter();
+
+        // --- UPDATE STATS ---
+        function updateStats(totalItems) {
+            const totalCompleted = [...completedState].length;
+            const percentage = totalItems > 0 ? Math.round((totalCompleted / processedData.length) * 100) : 0;
+            
+            progressBar.style.width = `${percentage}%`;
+            progressText.textContent = `${percentage}% Concluído (${totalCompleted} de ${processedData.length})`;
+        }
 
         // --- RENDER FUNCTION ---
         function render() {
@@ -415,6 +492,9 @@
 
             grid.innerHTML = '';
             countLabel.textContent = `${filtered.length} evento(s)`;
+            
+            // Update progress based on global state
+            updateStats(processedData.length);
 
             if (filtered.length === 0) {
                 emptyState.classList.remove('hidden');
@@ -422,6 +502,8 @@
                 emptyState.classList.add('hidden');
                 
                 filtered.forEach(item => {
+                    const isDone = completedState.has(item.id);
+
                     // Styles based on Route
                     let borderClass = "border-l-4 border-red-500";
                     let bgIcon = "bg-red-50 text-red-600 border border-red-100";
@@ -434,39 +516,43 @@
                         bgIcon = "bg-yellow-50 text-yellow-600 border border-yellow-100";
                     }
 
+                    // Done State Styles
+                    const cardOpacity = isDone ? 'opacity-60 bg-gray-50' : 'bg-white';
+                    const textDecoration = isDone ? 'line-through text-gray-400' : 'text-gray-800';
+                    const dateBg = isDone ? 'bg-gray-200 text-gray-400 border-gray-200' : 'bg-gray-50 text-gray-800 border-gray-100';
+
                     const card = document.createElement('div');
-                    // Compact Row Layout
-                    card.className = `bg-white rounded-md p-3 card-shadow ${borderClass} flex items-center justify-between gap-3`;
+                    card.className = `${cardOpacity} rounded-md p-3 card-shadow ${borderClass} flex items-center justify-between gap-3 transition-all duration-300`;
                     
                     const monthName = item.jsDate.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '');
                     const weekday = item.jsDate.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '');
 
                     card.innerHTML = `
-                        <div class="flex items-center gap-3 md:gap-4 overflow-hidden">
+                        <div class="flex items-center gap-3 md:gap-4 overflow-hidden flex-grow">
                             <!-- Date Box -->
-                            <div class="flex flex-col items-center justify-center bg-gray-50 rounded px-2 py-1 min-w-[3.5rem] border border-gray-100">
-                                <span class="text-[10px] uppercase font-bold text-gray-500 leading-tight">${monthName}</span>
-                                <span class="text-lg font-bold text-gray-800 leading-tight">${item.day}</span>
+                            <div class="flex flex-col items-center justify-center ${dateBg} rounded px-2 py-1 min-w-[3.5rem] border">
+                                <span class="text-[10px] uppercase font-bold leading-tight ${isDone ? 'text-gray-400' : 'text-gray-500'}">${monthName}</span>
+                                <span class="text-lg font-bold leading-tight">${item.day}</span>
                             </div>
                             
                             <!-- Info -->
-                            <div class="min-w-0">
-                                <h3 class="font-bold text-gray-800 text-sm truncate flex items-center gap-2">
+                            <div class="min-w-0 flex-grow">
+                                <h3 class="font-bold text-sm truncate flex items-center gap-2 ${textDecoration}">
                                     ${item.c}
-                                    <span class="text-[10px] font-normal bg-gray-100 text-gray-500 px-1.5 rounded hidden sm:inline-block">Região ${item.r}</span>
+                                    <span class="text-[10px] font-normal bg-gray-100 text-gray-500 px-1.5 rounded hidden sm:inline-block no-underline">Região ${item.r}</span>
                                 </h3>
-                                <p class="text-xs text-gray-500 flex items-center mt-0.5 truncate">
-                                    <span class="capitalize">${weekday}</span> <span class="mx-1">•</span> ${item.d}
+                                <p class="text-xs text-gray-500 flex items-center mt-0.5 truncate ${isDone ? 'line-through' : ''}">
+                                    <span class="capitalize">${weekday}</span> <span class="mx-1">•</span> ${item.d} <span class="mx-1">•</span> <span class="font-medium ${isDone ? 'text-gray-400' : 'text-orange-600'}">${item.rot}</span>
                                 </p>
                             </div>
                         </div>
 
-                        <!-- Badge -->
-                        <div class="shrink-0 flex flex-col items-end gap-1">
-                            <span class="inline-flex items-center rounded-full ${bgIcon} px-2.5 py-0.5 text-[10px] md:text-xs font-bold shadow-sm whitespace-nowrap">
-                                ${item.rot}
-                            </span>
-                            <span class="sm:hidden text-[9px] text-gray-400">Região ${item.r}</span>
+                        <!-- Checkbox -->
+                        <div class="shrink-0 pl-2">
+                             <input type="checkbox" class="custom-checkbox" 
+                                ${isDone ? 'checked' : ''} 
+                                onclick="toggleState('${item.id}')"
+                                title="${isDone ? 'Marcar como não feito' : 'Marcar como feito'}">
                         </div>
                     `;
                     grid.appendChild(card);
@@ -485,6 +571,9 @@
             monthFilter.value = "";
             render();
         });
+
+        // Make toggleState global so onclick attribute can find it
+        window.toggleState = toggleState;
 
         // Initial Render
         render();
