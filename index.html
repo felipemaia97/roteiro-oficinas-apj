@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oficinas Percursos Gerais</title>
+    <title>Oficinas Percursos Gerais - Março</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -11,87 +11,85 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #fff7ed; /* Fundo creme bem suave */
+            background-color: #fff7ed; /* Fundo levemente alaranjado */
         }
 
+        /* Paleta Original: Laranja e Amarelo */
         .gradient-header {
-            background: linear-gradient(135deg, #dc2626 0%, #ea580c 50%, #facc15 100%);
+            background: linear-gradient(135deg, #f97316 0%, #fbbf24 100%);
         }
 
         .card-shadow {
-            box-shadow: 0 2px 4px -1px rgba(220, 38, 38, 0.06), 0 1px 2px -1px rgba(220, 38, 38, 0.04);
+            box-shadow: 0 2px 4px rgba(249, 115, 22, 0.1);
             transition: all 0.2s ease;
         }
 
         .card-shadow:hover {
-            transform: translateX(4px);
-            box-shadow: 0 4px 6px -1px rgba(234, 88, 12, 0.1), 0 2px 4px -1px rgba(234, 88, 12, 0.06);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(249, 115, 22, 0.15);
         }
 
-        /* Custom Checkbox Style */
         .custom-checkbox {
             appearance: none;
             background-color: #fff;
             margin: 0;
-            font: inherit;
-            color: currentColor;
-            width: 1.25em;
-            height: 1.25em;
-            border: 2px solid #ea580c;
-            border-radius: 0.25em;
+            width: 1.6em;
+            height: 1.6em;
+            border: 2px solid #fdba74;
+            border-radius: 0.5em;
             display: grid;
             place-content: center;
             cursor: pointer;
-            transition: all 0.2s ease-in-out;
+            transition: all 0.2s ease;
         }
 
         .custom-checkbox::before {
             content: "";
-            width: 0.65em;
-            height: 0.65em;
+            width: 0.8em;
+            height: 0.8em;
             transform: scale(0);
             transition: 120ms transform ease-in-out;
             box-shadow: inset 1em 1em white;
-            transform-origin: center;
             clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
         }
 
         .custom-checkbox:checked {
-            background-color: #ea580c;
+            background-color: #f97316; /* Laranja vibrante */
             border-color: #ea580c;
         }
 
         .custom-checkbox:checked::before {
             transform: scale(1);
         }
+
+        select {
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23f97316'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 1em;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
     <!-- Header -->
-    <header class="gradient-header text-white p-4 shadow-md">
-        <div class="container mx-auto max-w-5xl">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-3">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="map" class="w-6 h-6"></i>
-                    <h1 class="text-xl md:text-2xl font-bold tracking-tight">Oficinas Percursos Gerais</h1>
-                </div>
-                <div class="text-white/90 text-xs font-medium bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
-                    Calendário 2025/2026
-                </div>
-            </div>
+    <header class="gradient-header text-white p-8 shadow-lg">
+        <div class="container mx-auto max-w-4xl text-center">
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight drop-shadow-md">Percursos Gerais</h1>
+            <p class="text-orange-900 text-sm font-bold uppercase tracking-[0.3em] mt-2 mix-blend-overlay">Cronograma de Oficinas • Março 2026</p>
         </div>
     </header>
 
-    <!-- Filters Section -->
-    <section class="bg-white border-b border-orange-100 sticky top-0 z-10 shadow-sm">
-        <div class="container mx-auto max-w-5xl p-3">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+    <!-- Filters -->
+    <section class="bg-white border-b border-orange-100 sticky top-0 z-20 shadow-md">
+        <div class="container mx-auto max-w-4xl p-4">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                 
-                <!-- Filter: Region -->
-                <div class="relative">
-                    <select id="regionFilter" class="w-full bg-orange-50 border border-orange-200 text-gray-700 text-sm rounded-md p-2 focus:ring-1 focus:ring-orange-500 focus:border-orange-500 outline-none cursor-pointer">
-                        <option value="">Região: Todas</option>
+                <div class="flex flex-col gap-1">
+                    <label class="text-[11px] font-bold text-orange-600 uppercase ml-1">Região</label>
+                    <select id="regionFilter" class="w-full bg-orange-50 border border-orange-200 text-orange-900 text-sm rounded-lg p-3 outline-none focus:ring-2 focus:ring-orange-400 transition-all">
+                        <option value="">Todas as Regiões</option>
                         <option value="1">Região 1</option>
                         <option value="2">Região 2</option>
                         <option value="3">Região 3</option>
@@ -101,308 +99,197 @@
                     </select>
                 </div>
 
-                <!-- Filter: Month -->
-                <div class="relative">
-                    <select id="monthFilter" class="w-full bg-orange-50 border border-orange-200 text-gray-700 text-sm rounded-md p-2 focus:ring-1 focus:ring-orange-500 focus:border-orange-500 outline-none cursor-pointer">
-                        <option value="">Mês: Todos</option>
-                        <option value="12">Dezembro 2025</option>
-                        <option value="01">Janeiro 2026</option>
-                        <option value="02">Fevereiro 2026</option>
+                <div class="flex flex-col gap-1">
+                    <label class="text-[11px] font-bold text-orange-600 uppercase ml-1">Período</label>
+                    <select id="monthFilter" class="w-full bg-orange-50 border border-orange-200 text-orange-900 text-sm rounded-lg p-3 outline-none opacity-75 cursor-not-allowed" disabled>
                         <option value="03">Março 2026</option>
                     </select>
                 </div>
 
-                <!-- Filter: City -->
-                <div class="relative">
-                    <select id="cityFilter" class="w-full bg-orange-50 border border-orange-200 text-gray-700 text-sm rounded-md p-2 focus:ring-1 focus:ring-orange-500 focus:border-orange-500 outline-none cursor-pointer">
-                        <option value="">Cidade: Todas</option>
-                        <!-- Populated by JS -->
-                    </select>
-                </div>
-
-                <!-- Clear Button -->
-                <div class="">
-                    <button id="clearFilters" class="w-full bg-red-50 hover:bg-red-100 text-red-600 text-sm font-semibold py-2 px-3 rounded-md transition-colors flex items-center justify-center gap-1 border border-red-100 h-full">
-                        <i data-lucide="x-circle" class="w-3 h-3"></i>
-                        Limpar
+                <div class="flex items-end col-span-2 md:col-span-1">
+                    <button id="clearFilters" class="w-full bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold py-3 px-3 rounded-lg transition-all flex items-center justify-center gap-2 shadow-sm">
+                        <i data-lucide="filter-x" class="w-4 h-4"></i>
+                        Limpar Filtros
                     </button>
                 </div>
             </div>
             
-            <!-- Progress Bar (Optional Visual) -->
-            <div class="mt-2 flex items-center gap-2 text-xs text-gray-500">
-                <span id="progressText">0% Concluído</span>
-                <div class="flex-grow bg-gray-200 rounded-full h-1.5 overflow-hidden">
-                    <div id="progressBar" class="bg-green-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+            <div class="mt-5">
+                <div class="flex justify-between items-center mb-1.5">
+                    <span id="progressText" class="text-[10px] font-black text-orange-700 uppercase tracking-widest">Progresso Total</span>
+                    <span id="resultsCount" class="text-[10px] font-black text-orange-500 uppercase">Calculando...</span>
+                </div>
+                <div class="w-full bg-orange-100 rounded-full h-3 overflow-hidden border border-orange-200">
+                    <div id="progressBar" class="bg-gradient-to-r from-orange-400 to-yellow-400 h-full transition-all duration-1000 ease-out shadow-inner" style="width: 0%"></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Content List -->
-    <main class="flex-grow container mx-auto max-w-5xl p-3 md:p-4">
-        
-        <!-- Stats -->
-        <div class="flex justify-between items-center mb-2 text-xs text-gray-500 font-medium px-1">
-            <span id="resultsCount">Carregando...</span>
-            <span class="hidden md:inline">Visualização em Lista Compacta</span>
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto max-w-4xl p-4 md:p-6">
+        <div id="eventsGrid" class="grid grid-cols-1 gap-4">
+            <!-- Os cards serão inseridos aqui -->
         </div>
 
-        <!-- List Container -->
-        <div id="eventsGrid" class="flex flex-col gap-2">
-            <!-- Items will be injected here -->
-        </div>
-
-        <!-- Empty State -->
-        <div id="emptyState" class="hidden flex flex-col items-center justify-center py-8 text-center">
-            <div class="bg-orange-50 p-3 rounded-full mb-3">
-                <i data-lucide="search-x" class="w-6 h-6 text-orange-400"></i>
+        <div id="emptyState" class="hidden flex flex-col items-center justify-center py-24 text-center">
+            <div class="bg-orange-100 p-6 rounded-full mb-4">
+                <i data-lucide="map-pin-off" class="w-10 h-10 text-orange-400"></i>
             </div>
-            <h3 class="text-sm font-bold text-gray-700">Nada encontrado</h3>
-            <p class="text-xs text-gray-400 mt-1">Ajuste os filtros.</p>
+            <h3 class="font-bold text-orange-900">Nenhuma oficina nesta região</h3>
+            <p class="text-orange-600 text-sm mt-1">Selecione outra opção no filtro acima.</p>
         </div>
     </main>
 
-    <footer class="bg-gray-800 text-gray-400 py-4 mt-6">
-        <div class="container mx-auto text-center px-4">
-            <p class="text-xs">Oficinas Percursos Gerais &copy; 2025-2026</p>
-        </div>
+    <footer class="p-10 text-center bg-orange-100 text-orange-800 text-[11px] font-bold uppercase tracking-[0.4em]">
+        <div class="mb-2 text-orange-600 font-medium">Oficinas Percursos Gerais</div>
+        &copy; 2026 • Minas Gerais
     </footer>
 
     <script>
-        // --- DATASET FROM PDF ---
-        // Format: { region: 1, city: "Name", route: "Rota X", date: "DD/MM/YYYY", rawDate: for sorting }
         const rawData = [
-            // REGIÃO 1
-            { r: 1, c: "Jequitaí", rot: "Rota 3", d: "12/01/2026" },
-            { r: 1, c: "Lagoa dos Patos", rot: "Rota 3", d: "15/01/2026" },
-            { r: 1, c: "São João da Lagoa", rot: "Rota 3", d: "16/01/2026" },
-            { r: 1, c: "Glaucilândia", rot: "Rota 2", d: "19/01/2026" },
-            { r: 1, c: "Engenheiro Navarro", rot: "Rota 3", d: "19/01/2026" },
-            { r: 1, c: "Juramento", rot: "Rota 2", d: "20/01/2026" },
-            { r: 1, c: "Francisco Dumont", rot: "Rota 3", d: "20/01/2026" },
-            { r: 1, c: "Itacambira", rot: "Rota 2", d: "21/01/2026" },
-            { r: 1, c: "Guaraciama", rot: "Rota 3", d: "21/01/2026" },
-            { r: 1, c: "Claro dos Poções", rot: "Rota 2", d: "23/01/2026" },
-
-            // REGIÃO 2
-            { r: 2, c: "São Romão", rot: "Rota 2", d: "12/01/2026" },
-            { r: 2, c: "Santa Fé de Minas", rot: "Rota 2", d: "13/01/2026" },
-            { r: 2, c: "Ponto Chique", rot: "Rota 3", d: "13/01/2026" },
-            { r: 2, c: "Urucuia", rot: "Rota 2", d: "14/01/2026" },
-            { r: 2, c: "Ibiaí", rot: "Rota 3", d: "14/01/2026" },
-            { r: 2, c: "Coração de Jesus", rot: "Rota 1", d: "16/01/2026" },
-            { r: 2, c: "Icaraí de Minas", rot: "Rota 1", d: "20/01/2026" },
-            { r: 2, c: "Ubaí", rot: "Rota 1", d: "21/01/2026" },
-            { r: 2, c: "Campo Azul", rot: "Rota 1", d: "22/01/2026" },
-            { r: 2, c: "São João do Pacuí", rot: "Rota 1", d: "23/01/2026" },
-
-            // REGIÃO 3
-            { r: 3, c: "Berilo", rot: "Rota 5", d: "12/01/2026" },
-            { r: 3, c: "Itinga", rot: "Rota 5", d: "13/01/2026" },
-            { r: 3, c: "Coronel Murta", rot: "Rota 5", d: "14/01/2026" },
-            { r: 3, c: "Minas Novas", rot: "Rota 5", d: "19/01/2026" },
-            { r: 3, c: "Leme do Prado", rot: "Rota 5", d: "20/01/2026" },
-            { r: 3, c: "José Gonçalves de Minas", rot: "Rota 5", d: "21/01/2026" },
-            { r: 3, c: "Botumirim", rot: "Rota 2", d: "22/01/2026" },
-            { r: 3, c: "Francisco Badaró", rot: "Rota 5", d: "22/01/2026" },
-            { r: 3, c: "Jenipapo de Minas", rot: "Rota 5", d: "23/01/2026" },
-
-            // REGIÃO 4
-            { r: 4, c: "Riacho dos Machados", rot: "Rota 4", d: "13/01/2026" },
-            { r: 4, c: "Porteirinha", rot: "Rota 4", d: "14/01/2026" },
-            { r: 4, c: "Serranópolis de Minas", rot: "Rota 4", d: "15/01/2026" },
-            { r: 4, c: "Novorizonte", rot: "Rota 5", d: "15/01/2026" },
-            { r: 4, c: "Catuti", rot: "Rota 4", d: "16/01/2026" },
-            { r: 4, c: "Rio Pardo de Minas", rot: "Rota 4", d: "19/01/2026" },
-            { r: 4, c: "Mato Verde", rot: "Rota 4", d: "21/01/2026" },
-            { r: 4, c: "Gameleiras", rot: "Rota 4", d: "22/01/2026" },
-            { r: 4, c: "Mamonas", rot: "Rota 4", d: "23/01/2026" },
-
-            // REGIÃO 5
-            { r: 5, c: "Santa Maria do Salto", rot: "Rota 6", d: "13/01/2026" },
-            { r: 5, c: "Jacinto", rot: "Rota 6", d: "14/01/2026" },
-            { r: 5, c: "Jordânia", rot: "Rota 6", d: "15/01/2026" },
-            { r: 5, c: "Divisópolis", rot: "Rota 6", d: "16/01/2026" },
-            { r: 5, c: "Vargem Grande do Rio Pardo", rot: "Rota 4", d: "20/01/2026" },
-            { r: 5, c: "Águas Vermelhas", rot: "Rota 6", d: "20/01/2026" },
-            { r: 5, c: "Berizal", rot: "Rota 6", d: "21/01/2026" },
-            { r: 5, c: "São João do Paraíso", rot: "Rota 6", d: "22/01/2026" },
-            { r: 5, c: "Indaiabira", rot: "Rota 6", d: "23/01/2026" },
-
-            // REGIÃO 6
-            { r: 6, c: "Patis", rot: "Rota 1", d: "12/01/2026" }
+            // Dados de Março Atualizados
+            { d: "11/03/2026", c: "Mirabela", r: 6 },
+            { d: "12/03/2026", c: "Capitão Enéas", r: 6 },
+            { d: "16/03/2026", c: "Luislândia", r: 6 },
+            { d: "16/03/2026", c: "Patis", r: 6 },
+            { d: "17/03/2026", c: "Japonvar", r: 6 },
+            { d: "18/03/2026", c: "Montalvânia", r: 6 },
+            { d: "19/03/2026", c: "Matias Cardoso (Local 1)", r: 6 },
+            { d: "19/03/2026", c: "Matias Cardoso (Local 2)", r: 6 },
+            { d: "20/03/2026", c: "Jaíba", r: 6 },
+            { d: "25/03/2026", c: "Chapada Gaúcha", r: 6 },
+            { d: "17/03/2026", c: "Minas Novas", r: 3 },
+            { d: "18/03/2026", c: "Berilo", r: 3 },
+            { d: "19/03/2026", c: "Francisco Badaró", r: 3 },
+            { d: "20/03/2026", c: "Itinga", r: 3 },
+            { d: "23/03/2026", c: "Coronel Murta", r: 3 },
+            { d: "24/03/2026", c: "Leme do Prado", r: 3 },
+            { d: "25/03/2026", c: "José Gonçalves de Minas", r: 3 },
+            { d: "26/03/2026", c: "Jenipapo de Minas", r: 3 },
+            { d: "20/03/2026", c: "Botumirim", r: 3 },
+            { d: "09/03/2026", c: "Jequitaí", r: 1 },
+            { d: "09/03/2026", c: "Engenheiro Navarro", r: 1 },
+            { d: "10/03/2026", c: "Francisco Dumont", r: 1 },
+            { d: "12/03/2026", c: "Lagoa dos Patos", r: 1 },
+            { d: "13/03/2026", c: "São João da Lagoa", r: 1 },
+            { d: "13/03/2026", c: "Juramento", r: 1 },
+            { d: "16/03/2026", c: "Glaucilândia", r: 1 },
+            { d: "17/03/2026", c: "Claro dos Poções", r: 1 },
+            { d: "18/03/2026", c: "Guaraciama", r: 1 },
+            { d: "19/03/2026", c: "Itacambira", r: 1 },
+            { d: "09/03/2026", c: "Ubaí", r: 2 },
+            { d: "10/03/2026", c: "São Romão", r: 2 },
+            { d: "10/03/2026", c: "Ponto Chique", r: 2 },
+            { d: "11/03/2026", c: "Santa Fé de Minas", r: 2 },
+            { d: "11/03/2026", c: "Ibiaí", r: 2 },
+            { d: "12/03/2026", c: "Urucuia", r: 2 },
+            { d: "17/03/2026", c: "Icaraí de Minas", r: 2 },
+            { d: "18/03/2026", c: "Campo Azul", r: 2 },
+            { d: "19/03/2026", c: "São João do Pacuí", r: 2 },
+            { d: "20/03/2026", c: "Coração de Jesus", r: 2 },
+            { d: "15/03/2026", c: "Berizal", r: 5 },
+            { d: "16/03/2026", c: "Berizal", r: 5 },
+            { d: "16/03/2026", c: "Indaiabira", r: 5 },
+            { d: "17/03/2026", c: "São João do Paraíso", r: 5 },
+            { d: "17/03/2026", c: "Vargem Grande do Rio Pardo", r: 5 },
+            { d: "18/03/2026", c: "Divisópolis", r: 5 },
+            { d: "19/03/2026", c: "Jacinto", r: 5 },
+            { d: "19/03/2026", c: "Santa Maria do Salto", r: 5 },
+            { d: "20/03/2026", c: "Jordânia", r: 5 },
+            { d: "20/03/2026", c: "Teófilo Otoni", r: 5 },
+            { d: "16/03/2026", c: "Riacho dos Machados", r: 4 },
+            { d: "17/03/2026", c: "Porteirinha", r: 4 },
+            { d: "18/03/2026", c: "Serranópolis", r: 4 },
+            { d: "19/03/2026", c: "Mamonas", r: 4 },
+            { d: "20/03/2026", c: "Gameleiras", r: 4 },
+            { d: "23/03/2026", c: "Novorizonte", r: 4 },
+            { d: "24/03/2026", c: "Rio Pardo de Minas", r: 4 },
+            { d: "25/03/2026", c: "Catuti", r: 4 },
+            { d: "26/03/2026", c: "Mato Verde", r: 4 }
         ];
 
-        // --- STATE MANAGEMENT ---
-        const getStoredState = () => {
-            const stored = localStorage.getItem('oficinasCompleted');
-            return stored ? new Set(JSON.parse(stored)) : new Set();
-        };
-
-        const completedState = getStoredState();
-
-        const toggleState = (id) => {
-            if (completedState.has(id)) {
-                completedState.delete(id);
-            } else {
-                completedState.add(id);
-            }
-            localStorage.setItem('oficinasCompleted', JSON.stringify([...completedState]));
-            render();
-        };
-
-        // Process data to add JS Date objects, unique IDs and sortable keys
         const processedData = rawData.map(item => {
             const parts = item.d.split('/');
-            const jsDate = new Date(parts[2], parts[1] - 1, parts[0]);
-            // Create a unique ID for state tracking: City-Date
-            const uniqueId = `${item.c}-${item.d}`.replace(/\s+/g, '-').toLowerCase();
+            const date = new Date(parts[2], parts[1]-1, parts[0]);
             return {
                 ...item,
-                jsDate: jsDate,
-                day: parts[0],
-                monthKey: parts[1], // "12", "01"
-                year: parts[2],
-                id: uniqueId
+                id: `march-26-${item.c}-${item.d}-${item.r}`.replace(/\s+/g, '-').toLowerCase(),
+                jsDate: date,
+                day: parts[0]
             };
-        }).sort((a, b) => a.jsDate - b.jsDate); // Sort chronologically
+        }).sort((a, b) => a.jsDate - b.jsDate);
 
-        // --- DOM ELEMENTS ---
-        const regionFilter = document.getElementById('regionFilter');
-        const cityFilter = document.getElementById('cityFilter');
-        const monthFilter = document.getElementById('monthFilter');
-        const clearBtn = document.getElementById('clearFilters');
-        const grid = document.getElementById('eventsGrid');
-        const emptyState = document.getElementById('emptyState');
-        const countLabel = document.getElementById('resultsCount');
-        const progressBar = document.getElementById('progressBar');
-        const progressText = document.getElementById('progressText');
+        const completedState = new Set(JSON.parse(localStorage.getItem('oficinas_mar_2026') || '[]'));
 
-        // --- POPULATE CITY FILTER ---
-        function populateCityFilter() {
-            const cities = [...new Set(processedData.map(d => d.c))].sort();
-            cityFilter.innerHTML = '<option value="">Cidade: Todas</option>';
-            cities.forEach(city => {
-                const opt = document.createElement('option');
-                opt.value = city;
-                opt.textContent = city;
-                cityFilter.appendChild(opt);
-            });
-        }
-        populateCityFilter();
-
-        // --- UPDATE STATS ---
-        function updateStats(totalItems) {
-            const totalCompleted = [...completedState].length;
-            const percentage = totalItems > 0 ? Math.round((totalCompleted / processedData.length) * 100) : 0;
-            
-            progressBar.style.width = `${percentage}%`;
-            progressText.textContent = `${percentage}% Concluído (${totalCompleted} de ${processedData.length})`;
+        function toggleState(id) {
+            if (completedState.has(id)) completedState.delete(id);
+            else completedState.add(id);
+            localStorage.setItem('oficinas_mar_2026', JSON.stringify([...completedState]));
+            render();
         }
 
-        // --- RENDER FUNCTION ---
         function render() {
-            const selectedRegion = regionFilter.value;
-            const selectedCity = cityFilter.value;
-            const selectedMonth = monthFilter.value;
-
-            const filtered = processedData.filter(item => {
-                const matchRegion = selectedRegion ? item.r.toString() === selectedRegion : true;
-                const matchCity = selectedCity ? item.c === selectedCity : true;
-                const matchMonth = selectedMonth ? item.monthKey === selectedMonth : true;
-                return matchRegion && matchCity && matchMonth;
-            });
-
-            grid.innerHTML = '';
-            countLabel.textContent = `${filtered.length} evento(s)`;
+            const rVal = document.getElementById('regionFilter').value;
+            const grid = document.getElementById('eventsGrid');
+            const empty = document.getElementById('emptyState');
             
-            // Update progress based on global state
-            updateStats(processedData.length);
-
-            if (filtered.length === 0) {
-                emptyState.classList.remove('hidden');
+            const filtered = processedData.filter(i => !rVal || i.r.toString() === rVal);
+            grid.innerHTML = '';
+            
+            if(filtered.length === 0) {
+                empty.classList.remove('hidden');
             } else {
-                emptyState.classList.add('hidden');
-                
+                empty.classList.add('hidden');
                 filtered.forEach(item => {
                     const isDone = completedState.has(item.id);
-
-                    // Styles based on Route
-                    let borderClass = "border-l-4 border-red-500";
-                    let bgIcon = "bg-red-50 text-red-600 border border-red-100";
-                    
-                    if(item.rot.includes("Rota 2") || item.rot.includes("Rota 4")) {
-                        borderClass = "border-l-4 border-orange-500";
-                        bgIcon = "bg-orange-50 text-orange-600 border border-orange-100";
-                    } else if (item.rot.includes("Rota 3") || item.rot.includes("Rota 5") || item.rot.includes("Rota 6")) {
-                        borderClass = "border-l-4 border-yellow-500";
-                        bgIcon = "bg-yellow-50 text-yellow-600 border border-yellow-100";
-                    }
-
-                    // Done State Styles
-                    const cardOpacity = isDone ? 'opacity-60 bg-gray-50' : 'bg-white';
-                    const textDecoration = isDone ? 'line-through text-gray-400' : 'text-gray-800';
-                    const dateBg = isDone ? 'bg-gray-200 text-gray-400 border-gray-200' : 'bg-gray-50 text-gray-800 border-gray-100';
-
-                    const card = document.createElement('div');
-                    card.className = `${cardOpacity} rounded-md p-3 card-shadow ${borderClass} flex items-center justify-between gap-3 transition-all duration-300`;
-                    
-                    const monthName = item.jsDate.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '');
                     const weekday = item.jsDate.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '');
-
+                    
+                    const card = document.createElement('div');
+                    card.className = `flex items-center gap-4 p-4 bg-white border-2 border-orange-50 rounded-2xl card-shadow ${isDone ? 'opacity-40 grayscale bg-orange-50' : ''}`;
+                    
                     card.innerHTML = `
-                        <div class="flex items-center gap-3 md:gap-4 overflow-hidden flex-grow">
-                            <!-- Date Box -->
-                            <div class="flex flex-col items-center justify-center ${dateBg} rounded px-2 py-1 min-w-[3.5rem] border">
-                                <span class="text-[10px] uppercase font-bold leading-tight ${isDone ? 'text-gray-400' : 'text-gray-500'}">${monthName}</span>
-                                <span class="text-lg font-bold leading-tight">${item.day}</span>
-                            </div>
-                            
-                            <!-- Info -->
-                            <div class="min-w-0 flex-grow">
-                                <h3 class="font-bold text-sm truncate flex items-center gap-2 ${textDecoration}">
-                                    ${item.c}
-                                    <span class="text-[10px] font-normal bg-gray-100 text-gray-500 px-1.5 rounded hidden sm:inline-block no-underline">Região ${item.r}</span>
-                                </h3>
-                                <p class="text-xs text-gray-500 flex items-center mt-0.5 truncate ${isDone ? 'line-through' : ''}">
-                                    <span class="capitalize">${weekday}</span> <span class="mx-1">•</span> ${item.d} <span class="mx-1">•</span> <span class="font-medium ${isDone ? 'text-gray-400' : 'text-orange-600'}">${item.rot}</span>
-                                </p>
+                        <!-- Data Card -->
+                        <div class="flex flex-col items-center justify-center min-w-[65px] h-[70px] bg-gradient-to-br from-orange-400 to-yellow-500 rounded-xl shadow-inner">
+                            <span class="text-[10px] font-black text-orange-900/60 uppercase leading-none mb-1">${weekday}</span>
+                            <span class="text-2xl font-black text-white leading-none">${item.day}</span>
+                        </div>
+
+                        <!-- Info -->
+                        <div class="flex-grow min-w-0">
+                            <h3 class="font-bold text-orange-950 text-lg leading-tight truncate ${isDone ? 'line-through decoration-orange-900' : ''}">${item.c}</h3>
+                            <div class="flex items-center gap-2 mt-2">
+                                <span class="bg-yellow-100 text-orange-700 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border border-yellow-200">Região ${item.r}</span>
+                                <span class="text-[11px] font-semibold text-orange-400">Março 2026</span>
                             </div>
                         </div>
 
-                        <!-- Checkbox -->
+                        <!-- Check -->
                         <div class="shrink-0 pl-2">
-                             <input type="checkbox" class="custom-checkbox" 
-                                ${isDone ? 'checked' : ''} 
-                                onclick="toggleState('${item.id}')"
-                                title="${isDone ? 'Marcar como não feito' : 'Marcar como feito'}">
+                            <input type="checkbox" class="custom-checkbox" ${isDone ? 'checked' : ''} onchange="toggleState('${item.id}')">
                         </div>
                     `;
                     grid.appendChild(card);
                 });
             }
+
+            // Stats & Progress
+            const perc = Math.round((completedState.size / processedData.length) * 100) || 0;
+            document.getElementById('progressBar').style.width = `${perc}%`;
+            document.getElementById('progressText').textContent = `${perc}% DAS OFICINAS REALIZADAS`;
+            document.getElementById('resultsCount').textContent = `${filtered.length} CIDADES NESTA BUSCA`;
+            
+            lucide.createIcons();
         }
 
-        // --- EVENT LISTENERS ---
-        regionFilter.addEventListener('change', render);
-        cityFilter.addEventListener('change', render);
-        monthFilter.addEventListener('change', render);
-
-        clearBtn.addEventListener('click', () => {
-            regionFilter.value = "";
-            cityFilter.value = "";
-            monthFilter.value = "";
+        document.getElementById('regionFilter').addEventListener('change', render);
+        document.getElementById('clearFilters').addEventListener('click', () => {
+            document.getElementById('regionFilter').value = "";
             render();
         });
 
-        // Make toggleState global so onclick attribute can find it
         window.toggleState = toggleState;
-
-        // Initial Render
         render();
-        lucide.createIcons();
-
     </script>
 </body>
 </html>
