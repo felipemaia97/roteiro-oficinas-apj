@@ -86,21 +86,22 @@
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                 
                 <div class="flex flex-col gap-1">
-                    <label class="text-[11px] font-bold text-orange-600 uppercase ml-1">Região (Rota)</label>
+                    <label class="text-[11px] font-bold text-orange-600 uppercase ml-1">Regional</label>
                     <select id="regionFilter" class="w-full bg-orange-50 border border-orange-200 text-orange-900 text-sm rounded-lg p-3 outline-none focus:ring-2 focus:ring-orange-400 transition-all">
-                        <option value="">Todas as Rotas</option>
-                        <option value="1">Rota 1</option>
-                        <option value="2">Rota 2</option>
-                        <option value="3">Rota 3</option>
-                        <option value="4">Rota 4</option>
-                        <option value="5">Rota 5</option>
-                        <option value="6">Rota 6</option>
+                        <option value="">Todas as Regionais</option>
+                        <option value="1">Regional 1</option>
+                        <option value="2">Regional 2</option>
+                        <option value="3">Regional 3</option>
+                        <option value="4">Regional 4</option>
+                        <option value="5">Regional 5</option>
+                        <option value="6">Regional 6</option>
                     </select>
                 </div>
 
                 <div class="flex flex-col gap-1">
                     <label class="text-[11px] font-bold text-orange-600 uppercase ml-1">Mês</label>
                     <select id="monthFilter" class="w-full bg-orange-50 border border-orange-200 text-orange-900 text-sm rounded-lg p-3 outline-none focus:ring-2 focus:ring-orange-400 transition-all">
+                        <option value="">Todos os Meses</option>
                         <option value="03">Março</option>
                         <option value="04">Abril</option>
                         <option value="05">Maio</option>
@@ -118,7 +119,7 @@
             
             <div class="mt-5">
                 <div class="flex justify-between items-center mb-1.5">
-                    <span id="progressText" class="text-[10px] font-black text-orange-700 uppercase tracking-widest">Progresso Total</span>
+                    <span id="progressText" class="text-[10px] font-black text-orange-700 uppercase tracking-widest">Progresso</span>
                     <span id="resultsCount" class="text-[10px] font-black text-orange-500 uppercase">Calculando...</span>
                 </div>
                 <div class="w-full bg-orange-100 rounded-full h-3 overflow-hidden border border-orange-200">
@@ -139,7 +140,7 @@
                 <i data-lucide="map-pin-off" class="w-10 h-10 text-orange-400"></i>
             </div>
             <h3 class="font-bold text-orange-950">Nenhuma oficina encontrada</h3>
-            <p class="text-orange-600 text-sm mt-1">Ajuste os filtros de Rota ou Mês.</p>
+            <p class="text-orange-600 text-sm mt-1">Ajuste os filtros de Regional ou Mês.</p>
         </div>
     </main>
 
@@ -150,7 +151,7 @@
 
     <script>
         const rawData = [
-            // DADOS MARÇO (EXISTENTES)
+            // DADOS MARÇO
             { d: "11/03/2026", c: "Mirabela", r: 6 }, { d: "12/03/2026", c: "Capitão Enéas", r: 6 },
             { d: "16/03/2026", c: "Luislândia", r: 6 }, { d: "16/03/2026", c: "Patis", r: 6 },
             { d: "17/03/2026", c: "Japonvar", r: 6 }, { d: "18/03/2026", c: "Montalvânia", r: 6 },
@@ -181,7 +182,7 @@
             { d: "23/03/2026", c: "Novorizonte", r: 4 }, { d: "24/03/2026", c: "Rio Pardo de Minas", r: 4 },
             { d: "25/03/2026", c: "Catuti", r: 4 }, { d: "26/03/2026", c: "Mato Verde", r: 4 },
 
-            // DADOS ABRIL (IMAGEM 1)
+            // DADOS ABRIL
             { d: "06/04/2026", c: "Engenheiro Navarro", r: 1 }, { d: "06/04/2026", c: "Ubaí", r: 2 }, { d: "06/04/2026", c: "Jequitaí", r: 3 }, { d: "06/04/2026", c: "Águas Vermelhas", r: 4 }, { d: "06/04/2026", c: "Minas Novas", r: 5 }, { d: "06/04/2026", c: "Novorizonte", r: 6 },
             { d: "07/04/2026", c: "Francisco Dumont", r: 1 }, { d: "07/04/2026", c: "São Romão", r: 2 }, { d: "07/04/2026", c: "Ponto Chique", r: 3 }, { d: "07/04/2026", c: "Berizal", r: 4 }, { d: "07/04/2026", c: "Leme do Prado", r: 5 }, { d: "07/04/2026", c: "Rio Pardo de Minas", r: 6 },
             { d: "08/04/2026", c: "Mirabela", r: 1 }, { d: "08/04/2026", c: "Santa Fé de Minas", r: 2 }, { d: "08/04/2026", c: "Ibiaí", r: 3 }, { d: "08/04/2026", c: "São João do Paraíso", r: 4 }, { d: "08/04/2026", c: "Francisco Badaró", r: 5 }, { d: "08/04/2026", c: "Mato Verde", r: 6 },
@@ -193,7 +194,7 @@
             { d: "16/04/2026", c: "Itacambira", r: 1 }, { d: "16/04/2026", c: "Matias Cardoso", r: 2 }, { d: "16/04/2026", c: "São João do Pacuí", r: 3 }, { d: "16/04/2026", c: "Divisópolis", r: 4 }, { d: "16/04/2026", c: "Coronel Murta", r: 5 }, { d: "16/04/2026", c: "Catuti", r: 6 },
             { d: "17/04/2026", c: "Botumirim", r: 1 }, { d: "17/04/2026", c: "Jaíba", r: 2 }, { d: "17/04/2026", c: "Coração de Jesus", r: 3 },
 
-            // DADOS MAIO (IMAGEM 2)
+            // DADOS MAIO
             { d: "04/05/2026", c: "Jequitaí", r: 1 }, { d: "04/05/2026", c: "Engenheiro Navarro", r: 2 }, { d: "04/05/2026", c: "Ubaí", r: 3 }, { d: "04/05/2026", c: "Novorizonte", r: 4 }, { d: "04/05/2026", c: "Águas Vermelhas", r: 5 }, { d: "04/05/2026", c: "Minas Novas", r: 6 },
             { d: "05/05/2026", c: "Ponto Chique", r: 1 }, { d: "05/05/2026", c: "Francisco Dumont", r: 2 }, { d: "05/05/2026", c: "São Romão", r: 3 }, { d: "05/05/2026", c: "Rio Pardo de Minas", r: 4 }, { d: "05/05/2026", c: "Berizal", r: 5 }, { d: "05/05/2026", c: "Leme do Prado", r: 6 },
             { d: "06/05/2026", c: "Ibiaí", r: 1 }, { d: "06/05/2026", c: "Mirabela", r: 2 }, { d: "06/05/2026", c: "Santa Fé de Minas", r: 3 }, { d: "06/05/2026", c: "Mato Verde", r: 4 }, { d: "06/05/2026", c: "São João do Paraíso", r: 5 }, { d: "06/05/2026", c: "Francisco Badaró", r: 6 },
@@ -205,7 +206,7 @@
             { d: "14/05/2026", c: "São João do Pacuí", r: 1 }, { d: "14/05/2026", c: "Itacambira", r: 2 }, { d: "14/05/2026", c: "Matias Cardoso", r: 3 }, { d: "14/05/2026", c: "Catuti", r: 4 }, { d: "14/05/2026", c: "Divisópolis", r: 5 }, { d: "14/05/2026", c: "Coronel Murta", r: 6 },
             { d: "15/05/2026", c: "Coração de Jesus", r: 1 }, { d: "15/05/2026", c: "Botumirim", r: 2 }, { d: "15/05/2026", c: "Jaíba", r: 3 },
 
-            // DADOS JUNHO (IMAGEM 3)
+            // DADOS JUNHO
             { d: "01/06/2026", c: "Ubaí", r: 1 }, { d: "01/06/2026", c: "Jequitaí", r: 2 }, { d: "01/06/2026", c: "Engenheiro Navarro", r: 3 }, { d: "01/06/2026", c: "Minas Novas", r: 4 }, { d: "01/06/2026", c: "Novorizonte", r: 5 }, { d: "01/06/2026", c: "Águas Vermelhas", r: 6 },
             { d: "02/06/2026", c: "São Romão", r: 1 }, { d: "02/06/2026", c: "Ponto Chique", r: 2 }, { d: "02/06/2026", c: "Francisco Dumont", r: 3 }, { d: "02/06/2026", c: "Leme do Prado", r: 4 }, { d: "02/06/2026", c: "Rio Pardo de Minas", r: 5 }, { d: "02/06/2026", c: "Berizal", r: 6 },
             { d: "03/06/2026", c: "Santa Fé de Minas", r: 1 }, { d: "03/06/2026", c: "Ibiaí", r: 2 }, { d: "03/06/2026", c: "Mirabela", r: 3 }, { d: "03/06/2026", c: "Francisco Badaró", r: 4 }, { d: "03/06/2026", c: "Mato Verde", r: 5 }, { d: "03/06/2026", c: "São João do Paraíso", r: 6 },
@@ -224,14 +225,14 @@
             const date = new Date(parts[2], parts[1]-1, parts[0]);
             return {
                 ...item,
-                id: `oficina-${parts[2]}-${parts[1]}-${item.c}-${item.r}`.replace(/\s+/g, '-').toLowerCase(),
+                id: `oficina-2026-${parts[1]}-${item.c}-${item.r}`.replace(/\s+/g, '-').toLowerCase(),
                 jsDate: date,
                 day: parts[0],
                 monthKey: parts[1]
             };
         }).sort((a, b) => a.jsDate - b.jsDate);
 
-        // Estado do LocalStorage (único para todo o ano)
+        // Estado do LocalStorage
         const completedState = new Set(JSON.parse(localStorage.getItem('oficinas_2026_data') || '[]'));
 
         function toggleState(id) {
@@ -247,10 +248,22 @@
             const grid = document.getElementById('eventsGrid');
             const empty = document.getElementById('emptyState');
             
-            // Filtra primeiro por mês (obrigatório para a barra de progresso) e depois por região
-            const monthTotal = processedData.filter(i => i.monthKey === mVal);
-            const monthDone = monthTotal.filter(i => completedState.has(i.id));
-            const filtered = monthTotal.filter(i => !rVal || i.r.toString() === rVal);
+            // Lógica de Filtro
+            let filtered = processedData;
+            
+            // Filtro por Mês (se vazio, mostra todos)
+            if (mVal) {
+                filtered = filtered.filter(i => i.monthKey === mVal);
+            }
+            
+            // Filtro por Regional
+            if (rVal) {
+                filtered = filtered.filter(i => i.r.toString() === rVal);
+            }
+
+            // Estatísticas baseadas no filtro atual ou no contexto visível
+            const totalInContext = filtered.length;
+            const doneInContext = filtered.filter(i => completedState.has(i.id)).length;
             
             grid.innerHTML = '';
             
@@ -261,19 +274,20 @@
                 filtered.forEach(item => {
                     const isDone = completedState.has(item.id);
                     const weekday = item.jsDate.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '');
+                    const monthName = item.jsDate.toLocaleDateString('pt-BR', { month: 'short' }).toUpperCase().replace('.', '');
                     
                     const card = document.createElement('div');
                     card.className = `flex items-center gap-4 p-4 bg-white border-2 border-orange-50 rounded-2xl card-shadow ${isDone ? 'opacity-40 grayscale bg-orange-50' : ''}`;
                     
                     card.innerHTML = `
                         <div class="flex flex-col items-center justify-center min-w-[65px] h-[70px] bg-gradient-to-br from-orange-400 to-yellow-500 rounded-xl shadow-inner">
-                            <span class="text-[10px] font-black text-orange-900/60 uppercase leading-none mb-1">${weekday}</span>
+                            <span class="text-[9px] font-black text-orange-900/60 uppercase leading-none mb-1">${weekday} • ${monthName}</span>
                             <span class="text-2xl font-black text-white leading-none">${item.day}</span>
                         </div>
                         <div class="flex-grow min-w-0">
                             <h3 class="font-bold text-orange-950 text-lg leading-tight truncate ${isDone ? 'line-through decoration-orange-900' : ''}">${item.c}</h3>
                             <div class="flex items-center gap-2 mt-2">
-                                <span class="bg-yellow-100 text-orange-700 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border border-yellow-200">Rota ${item.r}</span>
+                                <span class="bg-yellow-100 text-orange-700 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border border-yellow-200">Regional ${item.r}</span>
                                 <span class="text-[11px] font-semibold text-orange-400">${item.d}</span>
                             </div>
                         </div>
@@ -285,11 +299,11 @@
                 });
             }
 
-            // Estatísticas
-            const perc = monthTotal.length > 0 ? Math.round((monthDone.length / monthTotal.length) * 100) : 0;
+            // Atualização da barra de progresso (Percentual do que está sendo exibido)
+            const perc = totalInContext > 0 ? Math.round((doneInContext / totalInContext) * 100) : 0;
             document.getElementById('progressBar').style.width = `${perc}%`;
-            document.getElementById('progressText').textContent = `${perc}% CONCLUÍDO NO MÊS`;
-            document.getElementById('resultsCount').textContent = `${filtered.length} OFICINAS NESTA LISTA`;
+            document.getElementById('progressText').textContent = `${perc}% CONCLUÍDO ${mVal ? 'NO MÊS' : 'DA SELEÇÃO'}`;
+            document.getElementById('resultsCount').textContent = `${totalInContext} OFICINAS ENCONTRADAS`;
             
             lucide.createIcons();
         }
@@ -299,12 +313,11 @@
         document.getElementById('monthFilter').addEventListener('change', render);
         document.getElementById('clearFilters').addEventListener('click', () => {
             document.getElementById('regionFilter').value = "";
+            document.getElementById('monthFilter').value = "";
             render();
         });
 
-        // Inicializar com o mês atual das imagens (Junho) ou Março
-        document.getElementById('monthFilter').value = "03"; 
-        
+        // Inicialização
         window.toggleState = toggleState;
         render();
     </script>
